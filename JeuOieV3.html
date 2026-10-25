@@ -1,0 +1,3098 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu de l'Oie — Edition CERI</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🦢</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://www.youtube.com/iframe_api"></script>
+
+  <style>
+    :root {
+      --bg-main: #070414;
+      --bg-radial-1: #1d0c3a;
+      --bg-radial-2: #2c0a42;
+      --bg-card: #130926;
+      --bg-card-hover: #1e103b;
+      --border-color: #39196b;
+      --purple-primary: #9333ea;
+      --purple-light: #e9d5ff;
+      --purple-glow: rgba(147, 51, 234, 0.4);
+      --pink-accent: #f43f5e;
+      --text-main: #faf5ff;
+      --text-muted: #a892c9;
+      --track-bg: #190b33;
+      --track-line: #491f82;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #modalOverlay .modal-desc,
+    #modalOverlay .modal-desc *,
+    #modalOverlay .modal-title,
+    #modalOverlay .modal-title *,
+    #modalOverlay .modal-subtitle,
+    #modalOverlay .modal-effect,
+    #modalOverlay .modal-effect *,
+    input[type="text"] {
+      user-select: text !important;
+      -webkit-user-select: text !important;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 10%, var(--bg-radial-1) 0%, var(--bg-main) 60%),
+                  radial-gradient(circle at 90% 90%, var(--bg-radial-2) 0%, var(--bg-main) 70%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 12px 10px 24px;
+      overflow-x: hidden;
+      transition: background 0.4s ease, color 0.3s ease;
+      position: relative;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 8px;
+      transition: filter 0.3s ease;
+    }
+
+    header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.3rem;
+      background: linear-gradient(135deg, var(--text-main) 15%, var(--purple-primary) 60%, var(--pink-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+      text-shadow: 0 0 30px var(--purple-glow);
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* TOP TOOLBAR PARFAITEMENT CENTRÉE */
+    .top-toolbar {
+      display: flex;
+      justify-content: center; /* Entièrement centré */
+      align-items: center;
+      max-width: 1260px;
+      width: 96vw;
+      margin-bottom: 12px;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tool-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 7px 13px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .tool-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--purple-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--purple-glow);
+    }
+
+    .tool-btn.active-auto {
+      background: var(--purple-primary);
+      color: #ffffff;
+      border-color: #ffffff;
+      box-shadow: 0 0 14px var(--purple-glow);
+    }
+
+    .sound-btn-top {
+      font-size: 1.15rem;
+      padding: 7px 13px;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .app-layout {
+      display: flex;
+      gap: 20px;
+      max-width: 1260px;
+      width: 96vw;
+      align-items: stretch;
+      justify-content: center;
+      transition: filter 0.3s ease;
+    }
+
+    .blurred-bg {
+      filter: blur(8px) brightness(0.6);
+      pointer-events: none;
+    }
+
+    @media (max-width: 1060px) {
+      .app-layout {
+        flex-direction: column-reverse;
+        align-items: center;
+        width: 100%;
+      }
+      .top-toolbar {
+        width: 100%;
+      }
+    }
+
+    .sidebar {
+      width: 345px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    @media (max-width: 1060px) {
+      .sidebar {
+        width: 100%;
+        max-width: 820px;
+      }
+    }
+
+    .panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 14px 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+      transition: background 0.3s, border-color 0.3s;
+    }
+
+    #gameControlPanel {
+      display: flex;
+      flex-direction: column;
+      flex: 1 1 auto;
+    }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.05rem;
+      color: var(--purple-primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      user-select: none;
+    }
+
+    .btn-pill {
+      flex: 1;
+      min-width: 38px;
+      padding: 8px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.88rem;
+      transition: all 0.2s;
+      text-align: center;
+      user-select: none;
+    }
+
+    .btn-pill.active {
+      background: var(--purple-primary);
+      border-color: var(--purple-primary);
+      box-shadow: 0 0 14px var(--purple-glow);
+      color: #ffffff !important;
+    }
+
+    .player-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 12px 0 16px;
+      max-height: 48vh;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 4px;
+    }
+
+    .player-inputs::-webkit-scrollbar {
+      width: 4px;
+    }
+    .player-inputs::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .player-input-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-main);
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+    }
+
+    .player-main-fields {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .p-badge-preview {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid #fff;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .player-input-row input[type="text"] {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.92rem;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    .btn-dice-random {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    .btn-dice-random:hover {
+      background: var(--purple-primary);
+      border-color: var(--purple-light);
+      color: #ffffff;
+      transform: scale(1.1) rotate(12deg);
+      box-shadow: 0 0 10px var(--purple-glow);
+    }
+
+    .color-selection-bar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding-top: 3px;
+      border-top: 1px dashed var(--border-color);
+      flex-wrap: wrap;
+      user-select: none;
+    }
+
+    .color-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1.5px solid transparent;
+      transition: transform 0.15s, border-color 0.15s, opacity 0.2s;
+      position: relative;
+    }
+
+    .color-dot:hover {
+      transform: scale(1.25);
+      border-color: #fff;
+    }
+
+    .color-dot.active-color {
+      border-color: #fff;
+      transform: scale(1.15);
+      box-shadow: 0 0 8px currentColor;
+    }
+
+    .color-dot.taken-by-other {
+      opacity: 0.35;
+      filter: grayscale(0.2);
+    }
+
+    .color-dot.taken-by-other:hover {
+      opacity: 0.8;
+      transform: scale(1.15);
+    }
+
+    .custom-color-wrap {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: auto;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .color-wheel-input {
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      outline: none;
+      padding: 0;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 11px;
+      background: linear-gradient(135deg, var(--purple-primary), var(--pink-accent));
+      border: none;
+      border-radius: 12px;
+      color: #ffffff !important;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 6px 18px var(--purple-glow);
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      user-select: none;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px var(--purple-glow);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 9px;
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 10px;
+      user-select: none;
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      flex: 1 1 auto;
+      min-height: 270px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      padding-right: 2px;
+      width: 100%;
+      justify-content: flex-start;
+    }
+
+    .players-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .players-list::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .player-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s, transform 0.2s;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .player-card.active-turn {
+      border-color: var(--purple-primary);
+      background: linear-gradient(90deg, var(--purple-glow), transparent);
+      box-shadow: 0 0 14px var(--purple-glow);
+      transform: translateX(2px);
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .player-name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .player-status {
+      font-size: 0.72rem;
+      color: var(--pink-accent);
+      margin-left: 4px;
+      font-weight: 600;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .player-pos-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      background: var(--bg-card);
+      padding: 3px 8px;
+      border-radius: 16px;
+      color: var(--purple-primary);
+      border: 1px solid var(--border-color);
+      white-space: nowrap;
+      flex-shrink: 0;
+      margin-left: 6px;
+    }
+
+    .dice-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0 2px;
+      margin-top: auto;
+      user-select: none;
+    }
+
+    .dice-container {
+      display: flex;
+      gap: 12px;
+    }
+
+    .die {
+      width: 52px;
+      height: 52px;
+      background: linear-gradient(145deg, var(--bg-card-hover), var(--bg-card));
+      border: 2px solid var(--purple-primary);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: var(--text-main);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), inset 0 0 10px var(--purple-glow);
+      transition: transform 0.2s ease;
+      user-select: none;
+    }
+
+    .die.rolling {
+      animation: diceShake 0.45s ease infinite alternate;
+    }
+
+    @keyframes diceShake {
+      0% { transform: rotate(-18deg) translateY(-5px); }
+      100% { transform: rotate(18deg) translateY(5px); }
+    }
+
+    .log-box {
+      height: 160px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding-right: 4px;
+      font-size: 0.8rem;
+    }
+
+    .log-box::-webkit-scrollbar {
+      width: 4px;
+    }
+    .log-box::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 4px;
+    }
+
+    .log-item {
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(125, 125, 125, 0.06);
+      line-height: 1.3;
+      border-left: 2px solid var(--purple-primary);
+    }
+
+    .log-item strong {
+      color: var(--purple-primary);
+    }
+
+    .board-column {
+      flex: 1 1 650px;
+      max-width: 820px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .board-wrapper {
+      width: 100%;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 2px solid var(--border-color);
+      border-radius: 24px;
+      padding: 16px 18px;
+      box-shadow: 0 14px 45px rgba(0, 0, 0, 0.25), 0 0 28px var(--purple-glow);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: background 0.3s, border-color 0.3s;
+      user-select: none;
+    }
+
+    .board-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .board-header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .board-header span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 1.05rem;
+    }
+
+    .mode-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--purple-primary);
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .board-legend {
+      font-size: 0.78rem !important;
+      color: var(--text-muted) !important;
+      font-family: 'Plus Jakarta Sans', sans-serif !important;
+      font-weight: 500 !important;
+    }
+
+    #boardSvg {
+      width: 100%;
+      height: auto;
+      max-height: min(72vh, 680px);
+      aspect-ratio: 1 / 1;
+      filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
+    }
+
+    .track-bg {
+      fill: none;
+      stroke: var(--track-bg);
+      stroke-width: 58;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .track-glow {
+      fill: none;
+      stroke: var(--purple-primary);
+      stroke-width: 52;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.18;
+    }
+
+    .track-line {
+      fill: none;
+      stroke: var(--track-line);
+      stroke-width: 44;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .track-dashed {
+      fill: none;
+      stroke: var(--purple-primary);
+      stroke-width: 2.5;
+      stroke-dasharray: 6 10;
+      opacity: 0.55;
+    }
+
+    .node-group {
+      cursor: pointer;
+    }
+
+    .node-circle {
+      transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease, fill 0.2s ease;
+    }
+
+    .node-group:hover .node-circle {
+      stroke: #ffffff !important;
+      stroke-width: 3.5px !important;
+      filter: drop-shadow(0 0 10px var(--purple-primary)) !important;
+    }
+
+    .node-group text {
+      pointer-events: none;
+    }
+
+    .svg-pawn {
+      stroke: #ffffff;
+      stroke-width: 2;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.5));
+      pointer-events: none;
+      transition: cx 0.1s linear, cy 0.1s linear, fill 0.2s ease;
+    }
+
+    .svg-pawn.active-turn-pawn {
+      animation: activePawnPulse 0.85s ease-in-out infinite alternate;
+      transform-box: fill-box;
+      transform-origin: center;
+      stroke: #ffffff !important;
+      stroke-width: 2.8px !important;
+      filter: drop-shadow(0 0 8px #ffffff) drop-shadow(0 0 14px var(--purple-primary)) !important;
+    }
+
+    @keyframes activePawnPulse {
+      0% {
+        transform: scale(0.95);
+      }
+      100% {
+        transform: scale(1.42);
+      }
+    }
+
+    footer {
+      margin-top: 18px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .music-indicator-btn {
+      position: fixed;
+      bottom: 12px;
+      right: 14px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .music-indicator-btn:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--purple-primary);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--purple-glow);
+    }
+
+    .music-indicator-btn span {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(4, 2, 10, 0.85);
+      backdrop-filter: blur(12px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 14px;
+    }
+
+    .modal-card {
+      background: linear-gradient(150deg, var(--bg-card), var(--bg-main));
+      border: 2px solid var(--purple-primary);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 490px;
+      padding: 22px;
+      text-align: center;
+      box-shadow: 0 16px 50px rgba(0,0,0,0.4), 0 0 30px var(--purple-glow);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-icon {
+      font-size: 2.8rem;
+      margin-bottom: 6px;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.35rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.82rem;
+      color: var(--pink-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .modal-desc {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.45;
+      margin-bottom: 14px;
+    }
+
+    .modal-desc i {
+      font-style: italic;
+    }
+
+    .modal-effect {
+      background: var(--purple-glow);
+      border: 1px dashed var(--purple-primary);
+      border-radius: 10px;
+      padding: 9px;
+      font-weight: 700;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      margin-bottom: 18px;
+    }
+
+    .theme-mode-switch {
+      display: flex;
+      gap: 6px;
+      margin: 12px 0 14px;
+      background: var(--bg-main);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      user-select: none;
+    }
+
+    .mode-switch-btn {
+      flex: 1;
+      padding: 9px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    .mode-switch-btn.active {
+      background: var(--purple-primary);
+      color: #ffffff !important;
+      box-shadow: 0 0 12px var(--purple-glow);
+    }
+
+    .theme-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      text-align: left;
+      min-height: 100px;
+      user-select: none;
+    }
+
+    .theme-card {
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 10px;
+      padding: 8px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text-main);
+      transition: all 0.2s;
+    }
+
+    .theme-card:hover, .theme-card.active-theme {
+      border-color: var(--purple-primary);
+      box-shadow: 0 0 10px var(--purple-glow);
+      transform: translateY(-2px);
+    }
+
+    .theme-preview-dots {
+      display: flex;
+      gap: 3px;
+    }
+
+    .t-dot {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+    }
+
+    .custom-theme-box {
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .custom-theme-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 6px 0;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .music-select-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+      text-align: left;
+    }
+
+    .music-option-card {
+      background: var(--bg-main);
+      border: 1.5px solid var(--border-color);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all 0.2s;
+    }
+
+    .music-option-card:hover, .music-option-card.active-music {
+      border-color: var(--purple-primary);
+      box-shadow: 0 0 12px var(--purple-glow);
+      transform: translateY(-2px);
+    }
+
+    .music-option-info strong {
+      display: block;
+      color: var(--text-main);
+      font-size: 0.92rem;
+      margin-bottom: 2px;
+    }
+
+    .music-option-info span {
+      font-size: 0.76rem;
+      color: var(--text-muted);
+    }
+
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <header id="mainHeader">
+    <h1>Jeu de l'Oie</h1>
+    <p>Edition CERI • Feat. Driss • Sponsorisé par Gen Z</p>
+  </header>
+
+  <div id="yt-player-wrap" style="position:absolute; width:1px; height:1px; opacity:0.001; pointer-events:none; overflow:hidden;">
+    <div id="ytPlayer"></div>
+  </div>
+
+  <!-- TOOLBAR AVEC BOUTONS CENTRÉS -->
+  <div class="top-toolbar" id="mainToolbar">
+    <button class="tool-btn" onclick="restartCurrentGame()">🔄 Recommencer</button>
+    <button class="tool-btn" onclick="openSetupModal(true)">👥 Modifier les joueurs</button>
+    <button class="tool-btn" onclick="openModeModal()">🎮 Changer de mode</button>
+    <button class="tool-btn" onclick="openThemeModal()">🎨 Changer de thème</button>
+    <button class="tool-btn" onclick="openCustomizeGameModal()">⚙️ Personnaliser la partie</button>
+    <button id="autoPlayBtn" class="tool-btn" onclick="toggleAutoPlay()" title="Mode automatique (cliquer n'importe où pour couper)">⚡ Auto : OFF</button>
+    <button id="soundToggleBtn" class="tool-btn sound-btn-top" onclick="toggleSound()" title="Activer / Couper le son">🔊</button>
+  </div>
+
+  <div class="app-layout" id="mainAppLayout">
+    <aside class="sidebar">
+      
+      <section class="panel" id="gameControlPanel">
+        <h2 id="turnHeaderTitle">🎯 Au tour de jouer</h2>
+        <div class="players-list" id="playersList"></div>
+
+        <div class="dice-area">
+          <div class="dice-container">
+            <div class="die" id="die1">⚀</div>
+            <div class="die" id="die2">⚂</div>
+          </div>
+          <button class="btn-primary" id="rollDiceBtn" onclick="rollDice()">Lancer les dés 🎲</button>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>📜 Prises de notes</h2>
+        <div class="log-box" id="logBox">
+          <div class="log-item">Bienvenue à la fac ! En attente du départ…</div>
+        </div>
+      </section>
+
+    </aside>
+
+    <main class="board-column">
+      <div class="board-wrapper">
+        <div class="board-header">
+          <div class="board-header-left">
+            <span>🌀 La fac de l'Oie</span>
+            <span class="mode-badge" id="currentModeBadge">Moderne</span>
+          </div>
+          <span class="board-legend">Cliquez sur une case pour inspecter son effet</span>
+        </div>
+        
+        <svg id="boardSvg" viewBox="0 0 1000 1000">
+          <defs>
+            <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="var(--pink-accent)" stop-opacity="0.3"/>
+              <stop offset="60%" stop-color="var(--purple-primary)" stop-opacity="0.12"/>
+              <stop offset="100%" stop-color="var(--purple-primary)" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <circle cx="500" cy="500" r="485" fill="url(#centerGlow)" />
+          
+          <path class="track-bg" id="svgTrackBg" d="" />
+          <path class="track-glow" id="svgTrackGlow" d="" />
+          <path class="track-line" id="svgTrackLine" d="" />
+          <path class="track-dashed" id="svgTrackDashed" d="" />
+
+          <g id="tilesLayer"></g>
+          <g id="pawnsLayer"></g>
+        </svg>
+      </div>
+    </main>
+  </div>
+
+  <footer>
+    <button class="tool-btn" onclick="openAboutModal()">ℹ️ À propos de nous</button>
+  </footer>
+
+  <button class="music-indicator-btn" id="musicBtn" onclick="openMusicModal()" title="Cliquer pour choisir la musique">
+    <span>🎵</span>
+    <span id="musicTrackName">xddcc — Gooseworx</span>
+  </button>
+
+  <div class="modal-overlay" id="setupModalOverlay" style="display:flex;">
+    <div class="modal-card">
+      <div class="modal-icon">🎓</div>
+      <h3 class="modal-title" id="setupModalTitle">Nouvelle Partie</h3>
+      <div class="modal-subtitle">Bienvenue au CERI</div>
+      
+      <div style="text-align: left; margin: 12px 0 6px;">
+        <label style="font-size: 0.85rem; color: var(--text-muted); display:block; margin-bottom: 6px;">Mode de jeu :</label>
+        <div class="btn-group" id="modeButtonGroup">
+          <button class="btn-pill" id="modeBtnTrad" onclick="setGameMode('traditionnel')">📜 Traditionnel</button>
+          <button class="btn-pill active" id="modeBtnModerne" onclick="setGameMode('moderne')">✨ Moderne</button>
+          <button class="btn-pill" id="modeBtnHarr" onclick="setGameMode('harr')">🌶️ <i>Harr</i></button>
+        </div>
+      </div>
+
+      <div style="text-align: left; margin: 12px 0 6px;">
+        <label style="font-size: 0.85rem; color: var(--text-muted); display:block; margin-bottom: 6px;">Nombre d'étudiants (2 à 6) :</label>
+        <div class="btn-group">
+          <button class="btn-pill" onclick="setPlayerCount(2)">2</button>
+          <button class="btn-pill" onclick="setPlayerCount(3)">3</button>
+          <button class="btn-pill active" onclick="setPlayerCount(4)">4</button>
+          <button class="btn-pill" onclick="setPlayerCount(5)">5</button>
+          <button class="btn-pill" onclick="setPlayerCount(6)">6</button>
+        </div>
+      </div>
+
+      <div class="player-inputs" id="playerInputsContainer"></div>
+
+      <button class="btn-primary" onclick="confirmStartGame()">Entrer dans la fac 🚌</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modeModalOverlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-icon">🎮</div>
+      <h3 class="modal-title">Changer de mode de jeu</h3>
+      <div class="modal-subtitle">Règles & Disposition du parcours</div>
+
+      <div class="btn-group" style="margin: 16px 0 12px;">
+        <button class="btn-pill" id="modeModalBtnTrad" onclick="setGameMode('traditionnel')">📜 Traditionnel</button>
+        <button class="btn-pill" id="modeModalBtnModerne" onclick="setGameMode('moderne')">✨ Moderne</button>
+        <button class="btn-pill" id="modeModalBtnHarr" onclick="setGameMode('harr')">🌶️ <i>Harr</i></button>
+      </div>
+
+      <p class="modal-desc" id="modeModalDesc" style="min-height: 60px; line-height: 1.5; font-size: 0.92rem;">
+        Description du mode...
+      </p>
+
+      <button class="btn-primary" onclick="applyModeAndRestart()">Appliquer et Relancer 🔄</button>
+      <button class="btn-secondary" onclick="closeModeModal()">Annuler</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="musicModalOverlay">
+    <div class="modal-card" style="max-width: 460px;">
+      <div class="modal-icon">🎵</div>
+      <h3 class="modal-title">Choisir la musique</h3>
+      <div class="modal-subtitle">Sélectionnez votre bande-son préférée</div>
+
+      <div class="music-select-list" id="musicSelectList">
+        <div class="music-option-card" onclick="selectManualMusic('traditionnel')">
+          <div class="music-option-info">
+            <strong>Rondo Alla Turca — Mozart</strong>
+            <span>Ambiance classique & raffinée (Mode Traditionnel)</span>
+          </div>
+          <span>📜</span>
+        </div>
+        <div class="music-option-card" onclick="selectManualMusic('moderne')">
+          <div class="music-option-info">
+            <strong>xddcc — Gooseworx</strong>
+            <span>Rythme moderne & déjanté (Mode Moderne)</span>
+          </div>
+          <span>✨</span>
+        </div>
+        <div class="music-option-card" onclick="selectManualMusic('harr')">
+          <div class="music-option-info">
+            <strong>Black Knife — Toby Fox</strong>
+            <span>Tension & boss fight haletant (Mode <i>Harr</i>)</span>
+          </div>
+          <span>🌶️</span>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="closeMusicModal()">D'accord, ma biche !</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="themeModalOverlay">
+    <div class="modal-card" style="max-width: 530px;">
+      <div class="modal-icon">🎨</div>
+      <h3 class="modal-title">Thèmes & Ambiances</h3>
+      <div class="modal-subtitle">Basculez entre Clair et Sombre</div>
+
+      <div class="theme-mode-switch">
+        <button class="mode-switch-btn active" id="modeSwitchDarkBtn" onclick="switchThemeDisplayMode('dark')">🌙 Sombre</button>
+        <button class="mode-switch-btn" id="modeSwitchLightBtn" onclick="switchThemeDisplayMode('light')">☀️ Clair</button>
+      </div>
+
+      <div class="theme-grid" id="themeActiveGrid"></div>
+
+      <div class="custom-theme-box">
+        <strong style="font-size: 0.88rem; color: var(--purple-primary); display:block; margin-bottom: 4px;">✨ Dégradé personnalisé (Couleur 1 & 2) :</strong>
+        <span style="font-size: 0.76rem; color: var(--text-muted); display:block; margin-bottom: 8px;">Le dégradé s'adapte automatiquement au mode sélectionné (Sombre ou Clair)</span>
+        
+        <div class="custom-theme-row">
+          <span>Première couleur (Départ) :</span>
+          <input type="color" id="customColor1" value="#9333ea" onchange="applyCustomTwoColorsGradient()">
+        </div>
+        <div class="custom-theme-row">
+          <span>Deuxième couleur (Fin) :</span>
+          <input type="color" id="customColor2" value="#ec4899" onchange="applyCustomTwoColorsGradient()">
+        </div>
+      </div>
+
+      <button class="btn-primary" style="margin-top: 16px;" onclick="closeThemeModal()">Appliquer & Fermer</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="customizeModalOverlay">
+    <div class="modal-card" style="max-width: 440px;">
+      <div class="modal-icon">🛠️</div>
+      <h3 class="modal-title">Personnaliser la partie</h3>
+      <div class="modal-subtitle">Éditeur de règles & cases sur mesure</div>
+      <p class="modal-desc">Accédez à l'outil complet pour modifier les poids, créer vos propres événements et ajuster le plateau de jeu.</p>
+
+      <a href="https://www.youtube.com/watch?v=qRZQsdU6jN4" target="_blank" rel="noopener noreferrer" class="btn-primary" onclick="closeCustomizeGameModal()">
+        Cliquez ici pour personnaliser le jeu ✨
+      </a>
+
+      <button class="btn-secondary" onclick="closeCustomizeGameModal()">Retour au jeu</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="aboutModalOverlay">
+    <div class="modal-card" style="max-width: 480px;">
+      <div class="modal-icon">💖</div>
+      <h3 class="modal-title">À propos de nous</h3>
+      <div class="modal-subtitle">Projet Jeu de l'Oie — CERI</div>
+      
+      <p class="modal-desc" style="font-size: 0.95rem; line-height: 1.6; margin-bottom: 16px;">
+        Jeu proposé par une étudiante du CERI, fait avec beaucoup d'amour, d'humour, et beaucoup d'eau aussi (l'IA vous remercie pour le rafraichissement).
+      </p>
+
+      <div style="font-size: 0.8rem; color: var(--text-muted); font-style: italic; border-top: 1px dashed var(--border-color); padding-top: 12px; margin-bottom: 20px;">
+        P.S. J'avoue avoir la flemme de pousser la personnalisation d'avantage.
+      </div>
+
+      <button class="btn-primary" onclick="closeAboutModal()">D'accord, ma biche !</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <div class="modal-icon" id="modalIcon">🦢</div>
+      <h3 class="modal-title" id="modalTitle">Titre</h3>
+      <div class="modal-subtitle" id="modalSubtitle">Sous-titre</div>
+      <p class="modal-desc" id="modalDesc">Description</p>
+      <div class="modal-effect" id="modalEffect">Effet</div>
+      <button class="btn-primary" id="modalBtn" onclick="closeModal()">D'accord, ma biche !</button>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <script>
+    /* =========================================================
+       1. LES TYPES DE CASES
+       ========================================================= */
+    const SPECIAL_TYPES = {
+      OIE: {
+        type: 'oie',
+        icon: '🦢',
+        name: 'Ni vu ni connu',
+        subtitle: 'Relancer les dés',
+        desc: 'Les autres joueurs sont trop occupés à scroller sur leur téléphone. Tu en profites pour relancer les dés discrètement. Ni vu ni connu. 🤫',
+        effect: 'Relancer les dés immédiatement',
+        fillDark: '#3b246a', borderDark: '#8b5cf6',
+        fillLight: '#ede9fe', borderLight: '#8b5cf6', textLight: '#5b21b6'
+      },
+      OIE_TRAD: {
+        type: 'oie_trad',
+        icon: '🦢',
+        name: 'Ni vu ni connu',
+        subtitle: 'Double déplacement',
+        desc: 'Les autres joueurs sont trop occupés à scroller sur leur téléphone. Tu en profites pour avancer ton pion du double du montant des dés. Ni vu ni connu. 🤫',
+        effect: 'Avance à nouveau de la valeur du dé',
+        fillDark: '#3b246a', borderDark: '#8b5cf6',
+        fillLight: '#ede9fe', borderLight: '#8b5cf6', textLight: '#5b21b6'
+      },
+      PYTHAGORE: {
+        type: 'pythagore',
+        icon: '🪽',
+        name: 'Pythagore',
+        subtitle: 'Double déplacement',
+        desc: "Tu sors le théorème de Pythagore pour calculer le double de ton lancer (tu t'es trompé de formule, mais ton aura a convaincu tout le monde). Tu avances une seconde fois du même nombre de cases. 📐",
+        effect: 'Avance une seconde fois du même nombre de cases',
+        fillDark: '#133555', borderDark: '#38bdf8',
+        fillLight: '#e0f2fe', borderLight: '#0284c7', textLight: '#0369a1'
+      },
+      OBJECTION: {
+        type: 'objection',
+        icon: '↩️',
+        name: 'Objection !',
+        subtitle: '−2 cases',
+        desc: "OBJECTION ! Les autres joueurs t'accusent de triche et réclament justice. Malheureusement, le tribunal a tranché : recule de 2 cases. ⚖️",
+        effect: 'Recule de 2 cases',
+        fillDark: '#45162a', borderDark: '#f43f5e',
+        fillLight: '#ffe4e6', borderLight: '#f43f5e', textLight: '#be123c'
+      },
+      CHASSE: {
+        type: 'chasse',
+        icon: '🔄',
+        name: 'Qui part à la chasse perd sa place',
+        subtitle: 'Échange de places',
+        desc: 'Un joueur est parti aux toilettes sans surveiller son pion. Tu saisis cette occasion en or pour échanger vos places. Il fallait rester vigilant. 🚽',
+        effect: 'Échange ta position avec un adversaire',
+        fillDark: '#423214', borderDark: '#eab308',
+        fillLight: '#fef9c3', borderLight: '#ca8a04', textLight: '#854d0e'
+      },
+      BLOCUS: {
+        type: 'blocus',
+        icon: '⚖️',
+        name: 'Blocus',
+        subtitle: 'Équilibrage du peloton',
+        desc: "Tu refuses cette injustice : certains joueurs avancent beaucoup trop vite ! Tu imposes un blocus pour rétablir l'équilibre. Si tu es en tête, recule du nombre de joueurs ; sinon, avance d'autant de cases. ✊",
+        effect: 'En tête: recule du nb de joueurs | Sinon: avance d’autant',
+        fillDark: '#391c59', borderDark: '#c084fc',
+        fillLight: '#f3e8ff', borderLight: '#a855f7', textLight: '#6b21a8'
+      },
+      CHANCE: {
+        type: 'chance',
+        icon: '🍀',
+        name: "C'est quoi ton signe astrologique ?",
+        subtitle: 'Carte Chance',
+        desc: "Tu consultes ton horoscope du jour pour la blague : on dirait que tu as droit à une carte Chance ! Et toi qui pensais que l'astrologie était <i>overrated</i>, voilà que tu retournes ta veste maintenant que ça t'arrange. 🥴",
+        effect: 'Tire une carte Chance cosmique',
+        fillDark: '#12392b', borderDark: '#34d399',
+        fillLight: '#dcfce7', borderLight: '#16a34a', textLight: '#15803d'
+      },
+      PONT: {
+        type: 'pont',
+        icon: '🌉',
+        name: "Pont d'Avignon",
+        subtitle: '+6 cases',
+        desc: "Tu <i>aura farm</i> sur le pont d'Avignon. Par pitié, les autres joueurs t'accordent 6 cases supplémentaires. Adieu la dignité, bonjour la victoire ! 🏆",
+        effect: 'Avance de 6 cases',
+        fillDark: '#192b5c', borderDark: '#60a5fa',
+        fillLight: '#dbeafe', borderLight: '#2563eb', textLight: '#1d4ed8'
+      },
+      PONT_TRAD: {
+        type: 'pont_trad',
+        icon: '🌉',
+        name: "Pont d'Avignon",
+        subtitle: 'Raccourci vers la case 12',
+        desc: "Tu <i>aura farm</i> sur le pont d'Avignon. Mais personne ne s'est arrêté pour t'admirer : tu te venges en empruntant un raccourci qui t'amène directement à la case 12. 🤪",
+        effect: 'Accès direct à la case 12',
+        fillDark: '#192b5c', borderDark: '#60a5fa',
+        fillLight: '#dbeafe', borderLight: '#2563eb', textLight: '#1d4ed8'
+      },
+      AUBERGE: {
+        type: 'auberge',
+        icon: '🛏️',
+        name: 'Nuit blanche',
+        subtitle: 'Prochain tour perdu',
+        desc: "Tu regardes une dernière petite vidéo avant de te coucher, puis une autre, puis une autre, puis encore une autre, et finalement il est 6h du mat. Tu ne tiens plus debout : passe ton prochain tour. 😴",
+        effect: 'Passe ton prochain tour',
+        fillDark: '#241b4b', borderDark: '#818cf8',
+        fillLight: '#e0e7ff', borderLight: '#6366f1', textLight: '#4338ca'
+      },
+      AUBERGE_TRAD: {
+        type: 'auberge_trad',
+        icon: '🛏️',
+        name: 'Nuit blanche',
+        subtitle: '2 prochains tours perdus',
+        desc: "Tu regardes une dernière petite vidéo avant de te coucher, puis une autre, puis une autre, puis encore une autre, et finalement il est 6h du mat. Tu ne tiens plus debout : passe tes 2 prochains tours. 😴",
+        effect: 'Passe tes 2 prochains tours',
+        fillDark: '#241b4b', borderDark: '#818cf8',
+        fillLight: '#e0e7ff', borderLight: '#6366f1', textLight: '#4338ca'
+      },
+      PUITS: {
+        type: 'puits',
+        icon: '🕳️',
+        name: 'Toilettes sans PQ',
+        subtitle: 'Coincé aux toilettes',
+        desc: "La poisse ! Tu viens de faire ta grosse commission sans te rendre compte plus tôt qu'il n'y avait plus de PQ : tu dois attendre qu'un camarade vienne t'aider et te donne tous ses mouchoirs. (Il aura une envie pressante juste après et prendra ta place.) 🧻",
+        effect: "Immobilisé jusqu'à ce qu'un joueur prenne ta place (max 3 tours)",
+        fillDark: '#3f220f', borderDark: '#d97706',
+        fillLight: '#fef3c7', borderLight: '#b45309', textLight: '#78350f'
+      },
+      LABYRINTHE_TRAD: {
+        type: 'labyrinthe_trad',
+        icon: '🌀',
+        name: 'Inondation',
+        subtitle: 'Retour à la case 30',
+        desc: "ALERTE INONDATION ! Les routes sont impraticables et tu dois faire demi-tour. Retourne à la case 30 pour éviter le déluge. 🌧️",
+        effect: 'Retour immédiat à la case 30',
+        fillDark: '#0f3140', borderDark: '#22d3ee',
+        fillLight: '#cffafe', borderLight: '#0891b2', textLight: '#0e7490'
+      },
+      DETENTION: {
+        type: 'detention',
+        icon: '⛓️',
+        name: 'Détention',
+        subtitle: 'Accusé de fraude',
+        desc: "Tu as été accusé de fraude ! Tu es envoyé en détention à la case 52. Tu dois attendre qu'un camarade y atterrisse pour l'accuser à ta place ou attendre 3 tours. 🫩",
+        effect: "Enfermé jusqu'à ce qu'un joueur prenne ta place ou 3 tours",
+        fillDark: '#312e81', borderDark: '#818cf8',
+        fillLight: '#e0e7ff', borderLight: '#4f46e5', textLight: '#312e81'
+      },
+      MORT_TRAD: {
+        type: 'mort_trad',
+        icon: '💀',
+        name: 'Driss',
+        subtitle: 'Retour à la case départ',
+        desc: "Tu aperçois M. Matrouf au loin. Malheureusement, tu n'as pas eu le temps de fuir. Il a commencé à jacasser sur sa vie tout en se dirigeant vers l'entrée de la fac. Tu l'as suivi sans t'en rendre compte : te voilà de nouveau à la case départ. 💀",
+        effect: 'Retour à la case départ (case 1)',
+        fillDark: '#450a0a', borderDark: '#ef4444',
+        fillLight: '#fee2e2', borderLight: '#dc2626', textLight: '#991b1b'
+      },
+      INONDATION: {
+        type: 'inondation',
+        icon: '🌀',
+        name: 'Inondation',
+        subtitle: '−4 cases',
+        desc: "ALERTE INONDATION ! Les routes sont impraticables et tu dois faire demi-tour. Recule de 4 cases pour éviter le déluge. 🌧️",
+        effect: 'Recule de 4 cases',
+        fillDark: '#0f3140', borderDark: '#22d3ee',
+        fillLight: '#cffafe', borderLight: '#0891b2', textLight: '#0e7490'
+      },
+      TRANSLATION: {
+        type: 'translation',
+        icon: '🍃',
+        name: 'Translation',
+        subtitle: '+3 cases',
+        desc: "Une translation de vecteur u te déplace de 3 cases vers l’avant. Enfin un peu de maths qui sert à quelque chose en dehors des contrôles ! 📏",
+        effect: 'Avance de 3 cases',
+        fillDark: '#133936', borderDark: '#2dd4bf',
+        fillLight: '#ccfbf1', borderLight: '#0d9488', textLight: '#0f766e'
+      },
+      DRISS: {
+        type: 'driss',
+        icon: '💀',
+        name: 'Driss',
+        subtitle: '−8 cases',
+        desc: "Tu aperçois M. Matrouf au loin. Pris de panique, tu pars en courant dans la mauvaise direction. Tu te retrouves 8 cases en arrière. 🏃💨",
+        effect: 'Panique : recule de 8 cases !',
+        fillDark: '#4c1218', borderDark: '#f87171',
+        fillLight: '#fee2e2', borderLight: '#dc2626', textLight: '#991b1b'
+      }
+    };
+
+    const BASE_SPECIAL_CASES_DECK_MODERNE = [
+      SPECIAL_TYPES.OIE,
+      SPECIAL_TYPES.PYTHAGORE,
+      SPECIAL_TYPES.OBJECTION,
+      SPECIAL_TYPES.CHASSE,
+      SPECIAL_TYPES.BLOCUS,
+      SPECIAL_TYPES.PONT,
+      SPECIAL_TYPES.AUBERGE,
+      SPECIAL_TYPES.INONDATION,
+      SPECIAL_TYPES.TRANSLATION,
+      SPECIAL_TYPES.DRISS
+    ];
+
+    const BASE_SPECIAL_CASES_DECK_HARR = [
+      SPECIAL_TYPES.OBJECTION,
+      SPECIAL_TYPES.CHASSE,
+      SPECIAL_TYPES.BLOCUS,
+      SPECIAL_TYPES.AUBERGE,
+      SPECIAL_TYPES.AUBERGE_TRAD,
+      SPECIAL_TYPES.PUITS,
+      SPECIAL_TYPES.DETENTION,
+      SPECIAL_TYPES.INONDATION,
+      SPECIAL_TYPES.LABYRINTHE_TRAD,
+      SPECIAL_TYPES.DRISS,
+      SPECIAL_TYPES.MORT_TRAD,
+      SPECIAL_TYPES.OIE
+    ];
+
+    const MODERNE_COUNTS_CONFIG = [
+      { type: SPECIAL_TYPES.OIE, count: 6 },
+      { type: SPECIAL_TYPES.CHANCE, count: 4 },
+      { type: SPECIAL_TYPES.PYTHAGORE, count: 3 },
+      { type: SPECIAL_TYPES.OBJECTION, count: 3 },
+      { type: SPECIAL_TYPES.BLOCUS, count: 3 },
+      { type: SPECIAL_TYPES.TRANSLATION, count: 3 },
+      { type: SPECIAL_TYPES.CHASSE, count: 3 },
+      { type: SPECIAL_TYPES.PONT, count: 2 },
+      { type: SPECIAL_TYPES.AUBERGE, count: 2 },
+      { type: SPECIAL_TYPES.INONDATION, count: 2 },
+      { type: SPECIAL_TYPES.DRISS, count: 1 }
+    ];
+
+    const MUSIC_TRACK_NAMES = {
+      traditionnel: "Rondo Alla Turca — Mozart",
+      moderne: "xddcc — Gooseworx",
+      harr: "Black Knife — Toby Fox"
+    };
+
+    const LOCAL_MUSIC_BASENAMES = {
+      traditionnel: 'MusicModeTrad',
+      moderne: 'MusicModeModern',
+      harr: 'MusicModeHarr'
+    };
+
+    const bgAudio = new Audio();
+    bgAudio.loop = true;
+    bgAudio.volume = 0.45;
+
+    let userHasChosenMusic = false;
+
+    function playMusicForMode(mode) {
+      if (userHasChosenMusic) return;
+      playMusicByTrackKey(mode);
+    }
+
+    function playMusicByTrackKey(trackKey) {
+      updateMusicBadge(trackKey);
+      const baseName = LOCAL_MUSIC_BASENAMES[trackKey] || 'MusicModeModern';
+      const extensions = ['.mp3', '.wav', '.m4a', '.ogg', ''];
+      let extIndex = 0;
+
+      function tryNextExtension() {
+        if (extIndex >= extensions.length) return;
+        const src = baseName + extensions[extIndex++];
+        bgAudio.src = src;
+        bgAudio.muted = isMuted;
+        bgAudio.play().catch((err) => {
+          if (err.name === 'NotSupportedError' || bgAudio.error) {
+            tryNextExtension();
+          }
+        });
+      }
+
+      bgAudio.onerror = () => {
+        tryNextExtension();
+      };
+
+      tryNextExtension();
+    }
+
+    function updateMusicBadge(trackKey) {
+      const el = document.getElementById('musicTrackName');
+      if (el) {
+        el.textContent = MUSIC_TRACK_NAMES[trackKey] || MUSIC_TRACK_NAMES.moderne;
+      }
+    }
+
+    function openMusicModal() {
+      document.getElementById('musicModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+      document.getElementById('mainHeader').classList.add('blurred-bg');
+    }
+
+    function closeMusicModal() {
+      document.getElementById('musicModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+      document.getElementById('mainHeader').classList.remove('blurred-bg');
+    }
+
+    function selectManualMusic(trackKey) {
+      userHasChosenMusic = true;
+      playMusicByTrackKey(trackKey);
+      closeMusicModal();
+      logMessage(`🎵 <strong>Musique changée :</strong> ${MUSIC_TRACK_NAMES[trackKey]}`);
+    }
+
+    let currentSelectedMode = 'moderne';
+    let BOARD_MAPPING = {};
+    let userHasChosenTheme = false;
+
+    function setGameMode(mode) {
+      currentSelectedMode = mode;
+
+      const btnTrad = document.getElementById('modeBtnTrad');
+      const btnMod = document.getElementById('modeBtnModerne');
+      const btnHarr = document.getElementById('modeBtnHarr');
+      if (btnTrad) btnTrad.classList.toggle('active', mode === 'traditionnel');
+      if (btnMod) btnMod.classList.toggle('active', mode === 'moderne');
+      if (btnHarr) btnHarr.classList.toggle('active', mode === 'harr');
+
+      const mTrad = document.getElementById('modeModalBtnTrad');
+      const mMod = document.getElementById('modeModalBtnModerne');
+      const mHarr = document.getElementById('modeModalBtnHarr');
+      if (mTrad) mTrad.classList.toggle('active', mode === 'traditionnel');
+      if (mMod) mMod.classList.toggle('active', mode === 'moderne');
+      if (mHarr) mHarr.classList.toggle('active', mode === 'harr');
+
+      const descEl = document.getElementById('modeModalDesc');
+      if (descEl) {
+        if (mode === 'traditionnel') {
+          descEl.innerHTML = "<strong>Mode Traditionnel :</strong> Règles historiques du Jeu de l'Oie avec 13 Oies, Ponts fixes (6 & 12), Nuit blanche (19), Toilettes sans PQ (31), Inondation (42), Détention (52) et Driss (58).";
+        } else if (mode === 'harr') {
+          descEl.innerHTML = "<strong>Mode <i>Harr</i> :</strong> Le mélange ultime et impitoyable des deux modes ! Les malus envahissent le parcours, et les cases Driss (retour case départ) t'attendent juste devant l'arrivée.";
+        } else {
+          descEl.innerHTML = "<strong>Mode Moderne :</strong> Version personnalisée du CERI avec répartition équilibrée de nos 11 cases interactives.";
+        }
+      }
+
+      if (!userHasChosenTheme) {
+        if (mode === 'traditionnel') {
+          currentThemeMode = 'light';
+          selectThemePreset('vanille', false);
+          switchThemeDisplayMode('light');
+        } else if (mode === 'harr') {
+          currentThemeMode = 'dark';
+          selectThemePreset('fraise', false);
+          switchThemeDisplayMode('dark');
+        } else {
+          currentThemeMode = 'dark';
+          selectThemePreset('galaxie', false);
+          switchThemeDisplayMode('dark');
+        }
+      }
+
+      if (!userHasChosenMusic) {
+        updateMusicBadge(mode);
+      }
+    }
+
+    function openModeModal() {
+      setGameMode(currentSelectedMode);
+      document.getElementById('modeModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+      document.getElementById('mainHeader').classList.add('blurred-bg');
+    }
+
+    function closeModeModal() {
+      document.getElementById('modeModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+      document.getElementById('mainHeader').classList.remove('blurred-bg');
+    }
+
+    function applyModeAndRestart() {
+      closeModeModal();
+      restartCurrentGame();
+    }
+
+    function shuffleArray(arr) {
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function buildBoardForSelectedMode() {
+      BOARD_MAPPING = {};
+      const badge = document.getElementById('currentModeBadge');
+
+      if (currentSelectedMode === 'traditionnel') {
+        if (badge) badge.innerHTML = "Traditionnel";
+        
+        [5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59].forEach(pos => {
+          BOARD_MAPPING[pos] = SPECIAL_TYPES.OIE_TRAD;
+        });
+
+        BOARD_MAPPING[6] = SPECIAL_TYPES.PONT_TRAD;
+        BOARD_MAPPING[12] = SPECIAL_TYPES.PONT_TRAD;
+        BOARD_MAPPING[19] = SPECIAL_TYPES.AUBERGE_TRAD;
+        BOARD_MAPPING[31] = SPECIAL_TYPES.PUITS;
+        BOARD_MAPPING[42] = SPECIAL_TYPES.LABYRINTHE_TRAD;
+        BOARD_MAPPING[52] = SPECIAL_TYPES.DETENTION;
+        BOARD_MAPPING[58] = SPECIAL_TYPES.MORT_TRAD;
+
+      } else if (currentSelectedMode === 'moderne') {
+        if (badge) badge.innerHTML = "Moderne";
+        const eligibleCases = [];
+        for (let i = 2; i <= 62; i++) eligibleCases.push(i);
+        shuffleArray(eligibleCases);
+
+        let pointer = 0;
+        MODERNE_COUNTS_CONFIG.forEach(item => {
+          for (let k = 0; k < item.count; k++) {
+            if (pointer < eligibleCases.length) {
+              BOARD_MAPPING[eligibleCases[pointer++]] = item.type;
+            }
+          }
+        });
+
+      } else if (currentSelectedMode === 'harr') {
+        if (badge) badge.innerHTML = "<i>Harr</i>";
+        
+        const endZone = shuffleArray([55, 56, 57, 58, 59, 60, 61, 62]);
+        BOARD_MAPPING[endZone[0]] = SPECIAL_TYPES.MORT_TRAD;
+        BOARD_MAPPING[endZone[1]] = SPECIAL_TYPES.MORT_TRAD;
+
+        const lateMidZone = shuffleArray([42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54]);
+        BOARD_MAPPING[lateMidZone[0]] = SPECIAL_TYPES.LABYRINTHE_TRAD;
+        BOARD_MAPPING[lateMidZone[1]] = SPECIAL_TYPES.LABYRINTHE_TRAD;
+
+        BOARD_MAPPING[6] = SPECIAL_TYPES.PONT_TRAD;
+
+        const remainingCases = [];
+        for (let i = 2; i <= 62; i++) {
+          if (!BOARD_MAPPING[i]) remainingCases.push(i);
+        }
+        shuffleArray(remainingCases);
+
+        const harrPool = [
+          { type: SPECIAL_TYPES.DRISS, count: 4 },
+          { type: SPECIAL_TYPES.INONDATION, count: 4 },
+          { type: SPECIAL_TYPES.OBJECTION, count: 5 },
+          { type: SPECIAL_TYPES.PUITS, count: 2 },
+          { type: SPECIAL_TYPES.DETENTION, count: 2 },
+          { type: SPECIAL_TYPES.AUBERGE_TRAD, count: 2 },
+          { type: SPECIAL_TYPES.AUBERGE, count: 3 },
+          { type: SPECIAL_TYPES.BLOCUS, count: 4 },
+          { type: SPECIAL_TYPES.CHASSE, count: 3 },
+          { type: SPECIAL_TYPES.CHANCE, count: 3 },
+          { type: SPECIAL_TYPES.OIE, count: 1 },
+          { type: SPECIAL_TYPES.OIE_TRAD, count: 1 },
+          { type: SPECIAL_TYPES.PYTHAGORE, count: 1 },
+          { type: SPECIAL_TYPES.TRANSLATION, count: 1 },
+          { type: SPECIAL_TYPES.PONT, count: 1 }
+        ];
+
+        let ptr = 0;
+        harrPool.forEach(item => {
+          for (let k = 0; k < item.count; k++) {
+            if (ptr < remainingCases.length) {
+              BOARD_MAPPING[remainingCases[ptr++]] = item.type;
+            }
+          }
+        });
+      }
+    }
+
+    /* =========================================================
+       2. LISTE DES NOMS & PHRASES POKÉMON
+       ========================================================= */
+    const RANDOM_NAMES_POOL = [
+      "Ziad", "Saber", "Khalil", "Yanis", "Quentin", "Dimitri", 
+      "Lina", "Issam", "Yasmine", "Mathéo", "Geoffrey", "Mikaël", 
+      "Noa", "Ayoub", "Maëlya", "Mariane", "Adam", "Hugo", 
+      "Elion", "Sabrina", "Stella", "Rihanna", "Maxime", "Amadou", 
+      "Julien", "Daniel", "Matteo", "Océane", "Aminata", "Yassir"
+    ];
+
+    const POKEMON_SWITCH_CALLS = [
+      "En avant, ",
+      "À toi de jouer, ",
+      "Je te choisis, ",
+      "Fais de ton mieux, ",
+      "C'est parti, ",
+      "C'est à toi, ",
+      "Attaque, ",
+      "En piste, "
+    ];
+
+    let currentTurnCall = POKEMON_SWITCH_CALLS[0];
+
+    function pickRandomName(playerIndex) {
+      const takenNames = playerConfigs
+        .map((p, idx) => idx !== playerIndex ? p.name.trim().toLowerCase() : null)
+        .filter(Boolean);
+
+      const available = RANDOM_NAMES_POOL.filter(n => !takenNames.includes(n.toLowerCase()));
+      const pool = available.length > 0 ? available : RANDOM_NAMES_POOL;
+      const chosen = pool[Math.floor(Math.random() * pool.length)];
+
+      playerConfigs[playerIndex].name = chosen;
+      const input = document.getElementById(`pname_${playerIndex}`);
+      if (input) input.value = chosen;
+    }
+
+    /* =========================================================
+       3. PALETTE DES PIONS
+       ========================================================= */
+    const PAWN_PALETTE = [
+      { name: 'Rouge', hex: '#ef4444' },
+      { name: 'Orange', hex: '#f97316' },
+      { name: 'Jaune', hex: '#facc15' },
+      { name: 'Vert', hex: '#10b981' },
+      { name: 'Bleu ciel', hex: '#38bdf8' },
+      { name: 'Indigo', hex: '#4f46e5' },
+      { name: 'Violet', hex: '#8b5cf6' },
+      { name: 'Rose', hex: '#ec4899' },
+      { name: 'Noir', hex: '#18181b' },
+      { name: 'Blanc', hex: '#ffffff' }
+    ];
+
+    /* =========================================================
+       4. SYSTÈME DE THÈMES
+       ========================================================= */
+    const THEME_PRESETS = [
+      {
+        id: 'galaxie',
+        type: 'dark',
+        name: '🌌 Galaxie',
+        colors: ['#070414', '#9333ea', '#ec4899'],
+        vars: {
+          '--bg-main': '#070414',
+          '--bg-radial-1': '#1d0c3a',
+          '--bg-radial-2': '#2c0a42',
+          '--bg-card': '#130926',
+          '--bg-card-hover': '#1e103b',
+          '--border-color': '#39196b',
+          '--purple-primary': '#9333ea',
+          '--purple-light': '#e9d5ff',
+          '--purple-glow': 'rgba(147, 51, 234, 0.4)',
+          '--pink-accent': '#ec4899',
+          '--text-main': '#faf5ff',
+          '--text-muted': '#a892c9',
+          '--track-bg': '#190b33',
+          '--track-line': '#491f82'
+        }
+      },
+      {
+        id: 'fraise',
+        type: 'dark',
+        name: '🍓 Confiture de fraise',
+        colors: ['#160309', '#e11d48', '#881337'],
+        vars: {
+          '--bg-main': '#160309',
+          '--bg-radial-1': '#2b0717',
+          '--bg-radial-2': '#3f081d',
+          '--bg-card': '#220511',
+          '--bg-card-hover': '#33081a',
+          '--border-color': '#58112c',
+          '--purple-primary': '#e11d48',
+          '--purple-light': '#fda4af',
+          '--purple-glow': 'rgba(225, 29, 72, 0.4)',
+          '--pink-accent': '#c026d3',
+          '--text-main': '#fff1f2',
+          '--text-muted': '#c98a9d',
+          '--track-bg': '#280615',
+          '--track-line': '#6b1130'
+        }
+      },
+      {
+        id: 'matcha',
+        type: 'dark',
+        name: '🍵 Matcha',
+        colors: ['#07100b', '#52b788', '#2d5a3e'],
+        vars: {
+          '--bg-main': '#060f0a',
+          '--bg-radial-1': '#122218',
+          '--bg-radial-2': '#1b3325',
+          '--bg-card': '#0e1c14',
+          '--bg-card-hover': '#162b1f',
+          '--border-color': '#284c37',
+          '--purple-primary': '#52b788',
+          '--purple-light': '#b7e4c7',
+          '--purple-glow': 'rgba(82, 183, 136, 0.35)',
+          '--pink-accent': '#74c69d',
+          '--text-main': '#f0f7f2',
+          '--text-muted': '#8ca695',
+          '--track-bg': '#102217',
+          '--track-line': '#2d5a3e'
+        }
+      },
+      {
+        id: 'nuit',
+        type: 'dark',
+        name: '🌑 Nuit',
+        colors: ['#000000', '#ffffff', '#94a3b8'],
+        vars: {
+          '--bg-main': '#000000',
+          '--bg-radial-1': '#090a0d',
+          '--bg-radial-2': '#12151c',
+          '--bg-card': '#0a0a0c',
+          '--bg-card-hover': '#15171d',
+          '--border-color': '#2a303c',
+          '--purple-primary': '#e2e8f0',
+          '--purple-light': '#ffffff',
+          '--purple-glow': 'rgba(226, 232, 240, 0.3)',
+          '--pink-accent': '#94a3b8',
+          '--text-main': '#ffffff',
+          '--text-muted': '#8a94a6',
+          '--track-bg': '#11141a',
+          '--track-line': '#2e3745'
+        }
+      },
+      {
+        id: 'sunset',
+        type: 'light',
+        name: '🌅 Coucher de soleil',
+        colors: ['#fdf2f4', '#f43f5e', '#fb923c'],
+        vars: {
+          '--bg-main': '#fdf2f4',
+          '--bg-radial-1': '#ffe4e6',
+          '--bg-radial-2': '#fed7aa',
+          '--bg-card': '#ffffff',
+          '--bg-card-hover': '#fff1f2',
+          '--border-color': '#fecdd3',
+          '--purple-primary': '#f43f5e',
+          '--purple-light': '#be123c',
+          '--purple-glow': 'rgba(244, 63, 94, 0.28)',
+          '--pink-accent': '#f97316',
+          '--text-main': '#4c0519',
+          '--text-muted': '#9f1239',
+          '--track-bg': '#fecdd3',
+          '--track-line': '#fb923c'
+        }
+      },
+      {
+        id: 'miel',
+        type: 'light',
+        name: '🍯 Miel',
+        colors: ['#fefce8', '#eab308', '#fde047'],
+        vars: {
+          '--bg-main': '#fefce8',
+          '--bg-radial-1': '#fef9c3',
+          '--bg-radial-2': '#fde047',
+          '--bg-card': '#ffffff',
+          '--bg-card-hover': '#fefdf0',
+          '--border-color': '#fde047',
+          '--purple-primary': '#eab308',
+          '--purple-light': '#854d0e',
+          '--purple-glow': 'rgba(234, 179, 8, 0.3)',
+          '--pink-accent': '#ca8a04',
+          '--text-main': '#422006',
+          '--text-muted': '#854d0e',
+          '--track-bg': '#fef08a',
+          '--track-line': '#eab308'
+        }
+      },
+      {
+        id: 'marshmallow',
+        type: 'light',
+        name: '🍥 Marshmallow',
+        colors: ['#f8fbff', '#38bdf8', '#e879f9'],
+        vars: {
+          '--bg-main': '#f8fbff',
+          '--bg-radial-1': '#e0f2fe',
+          '--bg-radial-2': '#fae8ff',
+          '--bg-card': '#ffffff',
+          '--bg-card-hover': '#fbfdff',
+          '--border-color': '#bae6fd',
+          '--purple-primary': '#38bdf8',
+          '--purple-light': '#0369a1',
+          '--purple-glow': 'rgba(56, 189, 248, 0.25)',
+          '--pink-accent': '#e879f9',
+          '--text-main': '#0c2b4d',
+          '--text-muted': '#4f6f91',
+          '--track-bg': '#f5d0fe',
+          '--track-line': '#7dd3fc'
+        }
+      },
+      {
+        id: 'vanille',
+        type: 'light',
+        name: '🍦 Vanille',
+        colors: ['#fffdfa', '#f59e0b', '#fef3c7'],
+        vars: {
+          '--bg-main': '#fffefc',
+          '--bg-radial-1': '#fefaf0',
+          '--bg-radial-2': '#fcf4e4',
+          '--bg-card': '#ffffff',
+          '--bg-card-hover': '#fffef9',
+          '--border-color': '#faedd4',
+          '--purple-primary': '#d97706',
+          '--purple-light': '#92400e',
+          '--purple-glow': 'rgba(217, 119, 6, 0.18)',
+          '--pink-accent': '#f59e0b',
+          '--text-main': '#45321b',
+          '--text-muted': '#8c7355',
+          '--track-bg': '#fdf6e6',
+          '--track-line': '#fde68a'
+        }
+      }
+    ];
+
+    let currentThemeMode = 'dark';
+    let currentThemeId = 'galaxie';
+
+    function isCurrentThemeLight() {
+      if (currentThemeId === 'custom') return currentThemeMode === 'light';
+      const preset = THEME_PRESETS.find(t => t.id === currentThemeId);
+      return preset ? preset.type === 'light' : currentThemeMode === 'light';
+    }
+
+    function switchThemeDisplayMode(mode) {
+      currentThemeMode = mode;
+      const darkBtn = document.getElementById('modeSwitchDarkBtn');
+      const lightBtn = document.getElementById('modeSwitchLightBtn');
+      if (darkBtn) darkBtn.classList.toggle('active', mode === 'dark');
+      if (lightBtn) lightBtn.classList.toggle('active', mode === 'light');
+      renderThemeGrid();
+      
+      if (currentThemeId === 'custom') {
+        applyCustomTwoColorsGradient();
+      }
+    }
+
+    function renderThemeGrid() {
+      const container = document.getElementById('themeActiveGrid');
+      container.innerHTML = '';
+
+      const darkBtn = document.getElementById('modeSwitchDarkBtn');
+      const lightBtn = document.getElementById('modeSwitchLightBtn');
+      if (darkBtn) darkBtn.classList.toggle('active', currentThemeMode === 'dark');
+      if (lightBtn) lightBtn.classList.toggle('active', currentThemeMode === 'light');
+
+      const filtered = THEME_PRESETS.filter(t => t.type === currentThemeMode);
+      filtered.forEach(t => {
+        const div = document.createElement('div');
+        div.className = `theme-card ${t.id === currentThemeId ? 'active-theme' : ''}`;
+        div.onclick = () => selectThemePreset(t.id, true);
+        div.innerHTML = `
+          <div class="theme-preview-dots">
+            <span class="t-dot" style="background:${t.colors[0]}; border:1px solid #777;"></span>
+            <span class="t-dot" style="background:${t.colors[1]}"></span>
+            <span class="t-dot" style="background:${t.colors[2]}"></span>
+          </div>
+          <span>${t.name}</span>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectThemePreset(themeId, fromUserClick = true) {
+      if (fromUserClick) userHasChosenTheme = true;
+
+      currentThemeId = themeId;
+      const theme = THEME_PRESETS.find(t => t.id === themeId);
+      if (!theme) return;
+
+      currentThemeMode = theme.type;
+
+      const root = document.documentElement;
+      Object.entries(theme.vars).forEach(([k, v]) => {
+        root.style.setProperty(k, v);
+      });
+
+      document.getElementById('customColor1').value = theme.colors[1] || theme.colors[0];
+      document.getElementById('customColor2').value = theme.colors[2] || theme.colors[1];
+
+      renderThemeGrid();
+      drawBoardSvg();
+    }
+
+    function applyCustomTwoColorsGradient() {
+      userHasChosenTheme = true;
+      currentThemeId = 'custom';
+      const col1 = document.getElementById('customColor1').value;
+      const col2 = document.getElementById('customColor2').value;
+
+      const rgb1 = hexToRgb(col1);
+      const rgb2 = hexToRgb(col2);
+      const root = document.documentElement;
+
+      if (currentThemeMode === 'dark') {
+        const blackRgb = { r: 6, g: 3, b: 12 };
+        const bgMain = rgbToHex(mixRgb(blackRgb, rgb1, 0.12));
+        const bgRad1 = rgbToHex(mixRgb(blackRgb, rgb1, 0.3));
+        const bgRad2 = rgbToHex(mixRgb(blackRgb, rgb2, 0.35));
+        const bgCard = rgbToHex(mixRgb(blackRgb, rgb1, 0.18));
+        const bgCardHov = rgbToHex(mixRgb(blackRgb, rgb1, 0.26));
+        const border = rgbToHex(mixRgb(blackRgb, rgb1, 0.45));
+
+        root.style.setProperty('--bg-main', bgMain);
+        root.style.setProperty('--bg-radial-1', bgRad1);
+        root.style.setProperty('--bg-radial-2', bgRad2);
+        root.style.setProperty('--bg-card', bgCard);
+        root.style.setProperty('--bg-card-hover', bgCardHov);
+        root.style.setProperty('--border-color', border);
+        root.style.setProperty('--purple-primary', col1);
+        root.style.setProperty('--pink-accent', col2);
+        root.style.setProperty('--purple-light', rgbToHex(mixRgb(rgb1, {r:255,g:255,b:255}, 0.6)));
+        root.style.setProperty('--purple-glow', hexToRgba(col1, 0.4));
+        root.style.setProperty('--text-main', '#f8fafc');
+        root.style.setProperty('--text-muted', rgbToHex(mixRgb(rgb1, {r:220,g:220,b:240}, 0.45)));
+        root.style.setProperty('--track-bg', rgbToHex(mixRgb(blackRgb, rgb1, 0.22)));
+        root.style.setProperty('--track-line', rgbToHex(mixRgb(rgb1, rgb2, 0.5)));
+      } else {
+        const whiteRgb = { r: 255, g: 255, b: 255 };
+        const bgMain = rgbToHex(mixRgb(whiteRgb, rgb1, 0.08));
+        const bgRad1 = rgbToHex(mixRgb(whiteRgb, rgb1, 0.22));
+        const bgRad2 = rgbToHex(mixRgb(whiteRgb, rgb2, 0.22));
+        const border = rgbToHex(mixRgb(whiteRgb, rgb1, 0.38));
+
+        root.style.setProperty('--bg-main', bgMain);
+        root.style.setProperty('--bg-radial-1', bgRad1);
+        root.style.setProperty('--bg-radial-2', bgRad2);
+        root.style.setProperty('--bg-card', '#ffffff');
+        root.style.setProperty('--bg-card-hover', rgbToHex(mixRgb(whiteRgb, rgb1, 0.05)));
+        root.style.setProperty('--border-color', border);
+        root.style.setProperty('--purple-primary', col1);
+        root.style.setProperty('--pink-accent', col2);
+        root.style.setProperty('--purple-light', rgbToHex(mixRgb(rgb1, {r:10,g:10,b:20}, 0.45)));
+        root.style.setProperty('--purple-glow', hexToRgba(col1, 0.28));
+        root.style.setProperty('--text-main', rgbToHex(mixRgb(rgb1, {r:15,g:20,b:35}, 0.75)));
+        root.style.setProperty('--text-muted', rgbToHex(mixRgb(rgb1, {r:30,g:40,b:60}, 0.45)));
+        root.style.setProperty('--track-bg', rgbToHex(mixRgb(whiteRgb, rgb2, 0.32)));
+        root.style.setProperty('--track-line', rgbToHex(mixRgb(rgb1, rgb2, 0.5)));
+      }
+
+      renderThemeGrid();
+      drawBoardSvg();
+    }
+
+    function hexToRgb(hex) {
+      let c = hex.replace('#', '');
+      if (c.length === 3) c = c.split('').map(x => x + x).join('');
+      const num = parseInt(c, 16);
+      return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+    }
+
+    function rgbToHex(rgb) {
+      const clamp = v => Math.max(0, Math.min(255, Math.round(v)));
+      return '#' + [clamp(rgb.r), clamp(rgb.g), clamp(rgb.b)].map(x => x.toString(16).padStart(2, '0')).join('');
+    }
+
+    function mixRgb(rgb1, rgb2, weight) {
+      return {
+        r: rgb1.r * (1 - weight) + rgb2.r * weight,
+        g: rgb1.g * (1 - weight) + rgb2.g * weight,
+        b: rgb1.b * (1 - weight) + rgb2.b * weight
+      };
+    }
+
+    function hexToRgba(hex, alpha) {
+      let c = hex.replace('#','');
+      if (c.length === 3) c = c.split('').map(x=>x+x).join('');
+      let num = parseInt(c, 16);
+      return `rgba(${(num>>16)&255}, ${(num>>8)&255}, ${num&255}, ${alpha})`;
+    }
+
+    function openThemeModal() {
+      switchThemeDisplayMode(currentThemeMode);
+      renderThemeGrid();
+      document.getElementById('themeModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+    }
+
+    function closeThemeModal() {
+      document.getElementById('themeModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+    }
+
+    /* GESTION DU SON : BOUTON AVEC EMOJI SEUL */
+    let isMuted = false;
+
+    function toggleSound() {
+      isMuted = !isMuted;
+      const btn = document.getElementById('soundToggleBtn');
+      if (btn) {
+        btn.textContent = isMuted ? '🔇' : '🔊';
+        btn.title = isMuted ? 'Son désactivé (cliquer pour activer)' : 'Son activé (cliquer pour couper)';
+      }
+      bgAudio.muted = isMuted;
+      if (!isMuted) {
+        if (bgAudio.paused && bgAudio.src) {
+          bgAudio.play().catch(() => {});
+        }
+        playBeep(520, 'sine', 0.1);
+      }
+    }
+
+    /* =========================================================
+       MODE AUTOMATIQUE
+       ========================================================= */
+    let isAutoPlay = false;
+    let autoPlayTimer = null;
+
+    function toggleAutoPlay() {
+      if (isAutoPlay) {
+        disableAutoPlay();
+      } else {
+        enableAutoPlay();
+      }
+    }
+
+    function enableAutoPlay() {
+      if (gameOver) return;
+      isAutoPlay = true;
+      const btn = document.getElementById('autoPlayBtn');
+      if (btn) {
+        btn.textContent = '⚡ Auto : ON';
+        btn.classList.add('active-auto');
+      }
+      logMessage('⚡ <strong>Mode automatique activé.</strong>');
+      closeModal();
+      triggerAutoStep();
+    }
+
+    function disableAutoPlay() {
+      if (!isAutoPlay) return;
+      isAutoPlay = false;
+      if (autoPlayTimer) {
+        clearTimeout(autoPlayTimer);
+        autoPlayTimer = null;
+      }
+      const btn = document.getElementById('autoPlayBtn');
+      if (btn) {
+        btn.textContent = '⚡ Auto : OFF';
+        btn.classList.remove('active-auto');
+      }
+      logMessage('⏹️ <strong>Mode automatique désactivé.</strong>');
+    }
+
+    function triggerAutoStep() {
+      if (!isAutoPlay || gameOver) return;
+      if (autoPlayTimer) clearTimeout(autoPlayTimer);
+      autoPlayTimer = setTimeout(() => {
+        if (!isAutoPlay || gameOver || isRolling || isAnimatingMovement) return;
+        rollDice();
+      }, 500);
+    }
+
+    /* GESTION DE LA MODALE PERSONNALISER LA PARTIE */
+    function openCustomizeGameModal() {
+      document.getElementById('customizeModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+    }
+
+    function closeCustomizeGameModal() {
+      document.getElementById('customizeModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+    }
+
+    /* GESTION DE LA MODALE À PROPOS DE NOUS */
+    function openAboutModal() {
+      document.getElementById('aboutModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+    }
+
+    function closeAboutModal() {
+      document.getElementById('aboutModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+    }
+
+    /* =========================================================
+       5. COORDONNÉES DE LA SPIRALE
+       ========================================================= */
+    const boardPositions = [];
+    let spiralSvgPathD = "";
+
+    function generateSpiralCoords() {
+      const centerX = 500;
+      const centerY = 500;
+      const totalTurns = 3.2; 
+      const startAngle = Math.PI * 0.95;
+      const totalAngle = totalTurns * 2 * Math.PI;
+      const rStart = 468;
+      const rEnd = 72;
+
+      const samples = 1500;
+      const finePoints = [];
+      for (let i = 0; i <= samples; i++) {
+        const t = i / samples;
+        const theta = startAngle + t * totalAngle;
+        const r = rStart - t * (rStart - rEnd);
+        const x = centerX + r * Math.cos(theta);
+        const y = centerY + r * Math.sin(theta);
+        finePoints.push({ x, y });
+      }
+
+      const dists = [0];
+      for (let i = 1; i < finePoints.length; i++) {
+        const dx = finePoints[i].x - finePoints[i-1].x;
+        const dy = finePoints[i].y - finePoints[i-1].y;
+        dists.push(dists[i-1] + Math.hypot(dx, dy));
+      }
+      const totalLength = dists[dists.length - 1];
+
+      boardPositions[0] = null;
+      for (let c = 1; c <= 63; c++) {
+        const targetDist = ((c - 1) / 62) * totalLength;
+        let low = 0, high = dists.length - 1;
+        while (low < high) {
+          const mid = (low + high) >> 1;
+          if (dists[mid] < targetDist) low = mid + 1;
+          else high = mid;
+        }
+        boardPositions[c] = {
+          x: Math.round(finePoints[low].x * 10) / 10,
+          y: Math.round(finePoints[low].y * 10) / 10
+        };
+      }
+
+      let d = `M ${finePoints[0].x.toFixed(1)} ${finePoints[0].y.toFixed(1)}`;
+      for (let i = 1; i < finePoints.length; i += 6) {
+        d += ` L ${finePoints[i].x.toFixed(1)} ${finePoints[i].y.toFixed(1)}`;
+      }
+      spiralSvgPathD = d;
+    }
+
+    generateSpiralCoords();
+
+    /* =========================================================
+       6. GESTION DES JOUEURS & COULEURS
+       ========================================================= */
+    let playerCount = 4;
+    let players = [];
+    let currentPlayerIndex = 0;
+    let isRolling = false;
+    let gameOver = false;
+    let pendingAction = null;
+
+    const DEFAULT_COLORS = PAWN_PALETTE.slice(0, 6).map(p => p.hex);
+    const DEFAULT_NAMES = ["Aminata", "Mariane", "Océane", "Rihanna", "Maëlya", "Yasmine"];
+
+    let playerConfigs = [
+      { name: DEFAULT_NAMES[0], color: DEFAULT_COLORS[0] }, // Rouge
+      { name: DEFAULT_NAMES[1], color: DEFAULT_COLORS[1] }, // Orange
+      { name: DEFAULT_NAMES[2], color: DEFAULT_COLORS[2] }, // Jaune
+      { name: DEFAULT_NAMES[3], color: DEFAULT_COLORS[3] }, // Vert
+      { name: DEFAULT_NAMES[4], color: DEFAULT_COLORS[4] }, // Bleu ciel
+      { name: DEFAULT_NAMES[5], color: DEFAULT_COLORS[5] }  // Indigo
+    ];
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+      if (isMuted) return;
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    function saveCurrentInputNames() {
+      for (let i = 0; i < playerCount; i++) {
+        const input = document.getElementById(`pname_${i}`);
+        if (input) {
+          playerConfigs[i].name = input.value;
+        }
+      }
+    }
+
+    function setPlayerCount(count) {
+      saveCurrentInputNames();
+
+      playerCount = count;
+      document.querySelectorAll('#setupModalOverlay .btn-group button').forEach((btn) => {
+        if (!isNaN(parseInt(btn.textContent))) {
+          btn.classList.toggle('active', parseInt(btn.textContent) === count);
+        }
+      });
+      ensureUniqueColors();
+      renderPlayerInputs();
+    }
+
+    function ensureUniqueColors() {
+      const usedColors = [];
+      for (let i = 0; i < playerCount; i++) {
+        let col = playerConfigs[i].color.toLowerCase();
+        if (usedColors.includes(col)) {
+          const available = PAWN_PALETTE.find(p => !usedColors.includes(p.hex.toLowerCase()));
+          if (available) {
+            playerConfigs[i].color = available.hex;
+            col = available.hex.toLowerCase();
+          }
+        }
+        usedColors.push(col);
+      }
+    }
+
+    function setPlayerColor(playerIndex, newColor) {
+      saveCurrentInputNames();
+
+      const targetHex = newColor.toLowerCase();
+      const otherOwnerIdx = playerConfigs.findIndex((p, idx) => idx !== playerIndex && idx < playerCount && p.color.toLowerCase() === targetHex);
+
+      if (otherOwnerIdx !== -1) {
+        const prevColor = playerConfigs[playerIndex].color;
+        playerConfigs[otherOwnerIdx].color = prevColor;
+      }
+
+      playerConfigs[playerIndex].color = newColor;
+      renderPlayerInputs();
+    }
+
+    function renderPlayerInputs() {
+      const container = document.getElementById('playerInputsContainer');
+      container.innerHTML = '';
+
+      const activeColorsMap = {};
+      for (let j = 0; j < playerCount; j++) {
+        activeColorsMap[playerConfigs[j].color.toLowerCase()] = playerConfigs[j].name || `Joueur ${j+1}`;
+      }
+
+      for (let i = 0; i < playerCount; i++) {
+        const cfg = playerConfigs[i];
+        const row = document.createElement('div');
+        row.className = 'player-input-row';
+
+        let dotsHtml = PAWN_PALETTE.map(col => {
+          const isCurrent = col.hex.toLowerCase() === cfg.color.toLowerCase();
+          const ownerName = activeColorsMap[col.hex.toLowerCase()];
+          const isTakenByOther = ownerName && !isCurrent;
+
+          let titleText = col.name;
+          if (isTakenByOther) titleText += ` (Attribué à ${ownerName} - clique pour échanger)`;
+
+          return `
+            <span class="color-dot ${isCurrent ? 'active-color' : ''} ${isTakenByOther ? 'taken-by-other' : ''}" 
+                  style="background:${col.hex}; ${col.name === 'Noir' ? 'border:1.5px solid #888;' : ''}" 
+                  onclick="setPlayerColor(${i}, '${col.hex}')" 
+                  title="${titleText}"></span>
+          `;
+        }).join('');
+
+        row.innerHTML = `
+          <div class="player-main-fields">
+            <div class="p-badge-preview" style="background:${cfg.color}; color:${cfg.color};" title="Couleur actuelle"></div>
+            <input type="text" id="pname_${i}" value="${cfg.name}" maxlength="14" placeholder="Joueur ${i+1}" 
+                   oninput="playerConfigs[${i}].name = this.value" 
+                   onchange="playerConfigs[${i}].name = this.value">
+            <button type="button" class="btn-dice-random" onclick="pickRandomName(${i})" title="Nom aléatoire">🎲</button>
+          </div>
+          <div class="color-selection-bar">
+            ${dotsHtml}
+            <label class="custom-color-wrap" title="Choisir avec la roue chromatique">
+              <span>Roue 🎨</span>
+              <input type="color" class="color-wheel-input" value="${cfg.color}" onchange="setPlayerColor(${i}, this.value)">
+            </label>
+          </div>
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function openSetupModal(isReplay = false) {
+      document.getElementById('setupModalTitle').textContent = isReplay ? 'Modifier les joueurs' : 'Nouvelle Partie';
+      document.getElementById('setupModalOverlay').style.display = 'flex';
+      document.getElementById('mainAppLayout').classList.add('blurred-bg');
+      document.getElementById('mainHeader').classList.add('blurred-bg');
+    }
+
+    function confirmStartGame() {
+      stopConfetti();
+      saveCurrentInputNames();
+      ensureUniqueColors();
+      players = [];
+      for (let i = 0; i < playerCount; i++) {
+        const inputEl = document.getElementById(`pname_${i}`);
+        const val = inputEl ? inputEl.value.trim() : playerConfigs[i].name;
+        playerConfigs[i].name = val || DEFAULT_NAMES[i];
+        players.push({
+          id: i,
+          name: playerConfigs[i].name,
+          color: playerConfigs[i].color,
+          position: 1,
+          skipTurns: 0,
+          inTrap: false
+        });
+      }
+
+      document.getElementById('setupModalOverlay').style.display = 'none';
+      document.getElementById('mainAppLayout').classList.remove('blurred-bg');
+      document.getElementById('mainHeader').classList.remove('blurred-bg');
+
+      currentPlayerIndex = 0;
+      gameOver = false;
+      isRolling = false;
+      document.getElementById('rollDiceBtn').disabled = false;
+
+      currentTurnCall = POKEMON_SWITCH_CALLS[Math.floor(Math.random() * POKEMON_SWITCH_CALLS.length)];
+
+      buildBoardForSelectedMode();
+      playMusicForMode(currentSelectedMode);
+
+      const modeTitle = currentSelectedMode === 'traditionnel' ? 'Traditionnel' : (currentSelectedMode === 'harr' ? '<i>Harr</i>' : 'Moderne');
+      logMessage(`🚌 <strong>Partie lancée en Mode ${modeTitle} !</strong> Les ${playerCount} étudiants entrent dans La fac de l'Oie.`);
+
+      drawBoardSvg();
+      initPawnsLayer();
+      updatePawns();
+      updatePlayerStatusList();
+    }
+
+    function restartCurrentGame() {
+      disableAutoPlay();
+      stopConfetti();
+      players.forEach(p => {
+        p.position = 1;
+        p.skipTurns = 0;
+        p.inTrap = false;
+      });
+      currentPlayerIndex = 0;
+      gameOver = false;
+      isRolling = false;
+      document.getElementById('rollDiceBtn').disabled = false;
+
+      currentTurnCall = POKEMON_SWITCH_CALLS[Math.floor(Math.random() * POKEMON_SWITCH_CALLS.length)];
+
+      buildBoardForSelectedMode();
+      playMusicForMode(currentSelectedMode);
+      logMessage(`🔄 <strong>Partie redémarrée !</strong> Cases redistribuées, tous les pions repartent à la case 1.`);
+
+      drawBoardSvg();
+      updatePawns();
+      updatePlayerStatusList();
+    }
+
+    /* =========================================================
+       7. RENDU SVG
+       ========================================================= */
+    function drawBoardSvg() {
+      document.getElementById('svgTrackBg').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackGlow').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackLine').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackDashed').setAttribute('d', spiralSvgPathD);
+
+      const isLight = isCurrentThemeLight();
+      const tilesLayer = document.getElementById('tilesLayer');
+      tilesLayer.innerHTML = '';
+
+      for (let i = 1; i <= 63; i++) {
+        const pos = boardPositions[i];
+        const special = BOARD_MAPPING[i];
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute('class', 'node-group');
+        g.setAttribute('transform', `translate(${pos.x}, ${pos.y})`);
+        g.setAttribute('data-cell', i);
+        g.onclick = () => showCellInfo(i);
+
+        let r = 21;
+        let fill = isLight ? '#ffffff' : 'var(--bg-card)';
+        let stroke = 'var(--border-color)';
+        let strokeWidth = 2;
+        let icon = '';
+        let numColor = isLight ? 'var(--text-main)' : 'var(--purple-primary)';
+
+        if (i === 1) {
+          fill = isLight ? '#d1fae5' : '#064e3b';
+          stroke = isLight ? '#059669' : '#10b981';
+          numColor = isLight ? '#065f46' : '#a7f3d0';
+          icon = '🏁';
+          r = 25;
+        } else if (i === 63) {
+          fill = 'var(--bg-radial-1)';
+          stroke = 'var(--purple-primary)';
+          numColor = 'var(--purple-light)';
+          strokeWidth = 2.8;
+          icon = '🏆';
+          r = 26;
+        } else if (special) {
+          fill = isLight ? special.fillLight : special.fillDark;
+          stroke = isLight ? special.borderLight : special.borderDark;
+          numColor = isLight ? special.textLight : 'var(--text-main)';
+          icon = special.icon;
+          strokeWidth = isLight ? 2.2 : 2;
+        }
+
+        g.innerHTML = `
+          <circle class="node-circle" cx="0" cy="0" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />
+          ${icon ? `<text x="0" y="${i === 63 ? 4 : 3}" text-anchor="middle" font-size="${i === 63 ? '18' : '14'}">${icon}</text>` : ''}
+          <text x="0" y="${icon ? (i === 63 ? -13 : -11) : 4}" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="${i === 63 ? '12' : '11'}" fill="${numColor}">${i}</text>
+        `;
+
+        tilesLayer.appendChild(g);
+      }
+    }
+
+    function initPawnsLayer() {
+      const pawnsLayer = document.getElementById('pawnsLayer');
+      pawnsLayer.innerHTML = '';
+      players.forEach(p => {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute('class', 'svg-pawn');
+        circle.setAttribute('id', `pawn-svg-${p.id}`);
+        circle.setAttribute('r', playerCount > 4 ? 7.5 : 8.5);
+        circle.setAttribute('fill', p.color);
+        pawnsLayer.appendChild(circle);
+      });
+    }
+
+    function updatePawns() {
+      const occupantsByPos = {};
+      players.forEach(p => {
+        if (!occupantsByPos[p.position]) occupantsByPos[p.position] = [];
+        occupantsByPos[p.position].push(p);
+      });
+
+      const sortedPlayers = [...players].sort((a, b) => {
+        if (a.id === currentPlayerIndex) return 1;
+        if (b.id === currentPlayerIndex) return -1;
+        return a.id - b.id;
+      });
+
+      const pawnsLayer = document.getElementById('pawnsLayer');
+
+      sortedPlayers.forEach(p => {
+        const list = occupantsByPos[p.position] || [p];
+        const idx = list.indexOf(p);
+        const count = list.length;
+        const pos = boardPositions[p.position];
+        if (!pos) return;
+
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (count > 1) {
+          const angle = (idx / count) * 2 * Math.PI - Math.PI / 2;
+          const dist = count > 3 ? 13.5 : 11.5;
+          offsetX = Math.cos(angle) * dist;
+          offsetY = Math.sin(angle) * dist;
+        }
+
+        const pawnEl = document.getElementById(`pawn-svg-${p.id}`);
+        if (pawnEl) {
+          pawnEl.setAttribute('cx', (pos.x + offsetX).toFixed(1));
+          pawnEl.setAttribute('cy', (pos.y + offsetY).toFixed(1));
+          pawnEl.setAttribute('fill', p.color);
+
+          const isActive = (p.id === players[currentPlayerIndex]?.id) && !gameOver;
+          pawnEl.classList.toggle('active-turn-pawn', isActive);
+
+          if (isActive && pawnsLayer) {
+            pawnsLayer.appendChild(pawnEl);
+          }
+        }
+      });
+    }
+
+    /* MISE À JOUR DU TOUR */
+    function updatePlayerStatusList() {
+      const container = document.getElementById('playersList');
+      container.innerHTML = '';
+
+      const currentP = players[currentPlayerIndex];
+      const turnTitleEl = document.getElementById('turnHeaderTitle');
+      if (turnTitleEl && currentP && !gameOver) {
+        turnTitleEl.textContent = `🎯 ${currentTurnCall}${currentP.name} !`;
+      }
+
+      players.forEach((p, idx) => {
+        const isTurn = idx === currentPlayerIndex && !gameOver;
+        const card = document.createElement('div');
+        card.className = `player-card ${isTurn ? 'active-turn' : ''}`;
+        
+        let statusText = '';
+        if (p.inTrap) {
+          statusText = `(Bloqué ⛓️ -${p.skipTurns})`;
+        } else if (p.skipTurns > 0) {
+          statusText = `(Dort 😴 -${p.skipTurns})`;
+        }
+
+        card.innerHTML = `
+          <div class="player-info">
+            <div class="p-badge-preview" style="background:${p.color}; color:${p.color}; width:16px; height:16px;"></div>
+            <span class="player-name">${p.name}</span>
+            <span class="player-status">${statusText}</span>
+          </div>
+          <div class="player-pos-badge">Case ${p.position}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* =========================================================
+       8. LOGIQUE DES DÉS & DÉPLACEMENTS (AVEC SKIP AU CLIC)
+       ========================================================= */
+    const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+    let isAnimatingMovement = false;
+    let stepAnimationTimer = null;
+    let stepAnimationFinishCallback = null;
+
+    function skipCurrentMovementAnimation() {
+      if (isAnimatingMovement && stepAnimationFinishCallback) {
+        stepAnimationFinishCallback();
+      }
+    }
+
+    // N'IMPORTE QUEL CLIC (MÊME SUR UN BOUTON) COUPE L'AUTO ET SKIP L'ANIMATION
+    document.addEventListener('click', (e) => {
+      // Si on clique sur le bouton auto lui-même, on laisse sa fonction toggle s'exécuter
+      if (!e.target.closest('#autoPlayBtn')) {
+        if (isAutoPlay) {
+          disableAutoPlay();
+        }
+      }
+
+      // Saute immédiatement l'animation de saut du pion
+      skipCurrentMovementAnimation();
+    });
+
+    function rollDice() {
+      if (isRolling || gameOver) return;
+
+      const player = players[currentPlayerIndex];
+
+      if (player.skipTurns > 0) {
+        player.skipTurns--;
+        if (player.inTrap && player.skipTurns === 0) {
+          player.inTrap = false;
+          logMessage(`⛓️ <strong>${player.name}</strong> est enfin libre de repartir !`);
+        } else {
+          logMessage(`😴 <strong>${player.name}</strong> passe son tour (reste ${player.skipTurns}).`);
+        }
+        nextTurn();
+        return;
+      }
+
+      isRolling = true;
+      document.getElementById('rollDiceBtn').disabled = true;
+
+      const die1El = document.getElementById('die1');
+      const die2El = document.getElementById('die2');
+      die1El.classList.add('rolling');
+      die2El.classList.add('rolling');
+      playBeep(280, 'square', 0.15);
+
+      let count = 0;
+      const interval = setInterval(() => {
+        die1El.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+        die2El.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+        count++;
+
+        if (count > 9) {
+          clearInterval(interval);
+          die1El.classList.remove('rolling');
+          die2El.classList.remove('rolling');
+
+          const d1 = Math.floor(Math.random() * 6) + 1;
+          const d2 = Math.floor(Math.random() * 6) + 1;
+          die1El.textContent = DICE_FACES[d1 - 1];
+          die2El.textContent = DICE_FACES[d2 - 1];
+
+          const total = d1 + d2;
+          playBeep(520, 'sine', 0.2);
+          logMessage(`🎲 <strong>${player.name}</strong> fait un <strong>${total}</strong> (${d1} + ${d2}).`);
+
+          movePlayer(player, total);
+        }
+      }, 50);
+    }
+
+    function movePlayer(player, steps, callback) {
+      let targetPos = player.position + steps;
+
+      if (targetPos > 63) {
+        const overshoot = targetPos - 63;
+        targetPos = 63 - overshoot;
+        logMessage(`↩️ <strong>${player.name}</strong> dépasse le centre et rebondit en arrière sur la case <strong>${targetPos}</strong> !`);
+      }
+
+      if (targetPos < 1) targetPos = 1;
+
+      animateSteps(player, targetPos, () => {
+        if (callback) {
+          callback();
+        } else {
+          handleLanding(player, steps, 0);
+        }
+      });
+    }
+
+    function animateSteps(player, targetPos, onDone) {
+      const stepDir = targetPos > player.position ? 1 : -1;
+      isAnimatingMovement = true;
+
+      stepAnimationFinishCallback = () => {
+        if (!isAnimatingMovement) return;
+        clearInterval(stepAnimationTimer);
+        stepAnimationTimer = null;
+        isAnimatingMovement = false;
+        stepAnimationFinishCallback = null;
+        player.position = targetPos;
+        updatePawns();
+        onDone();
+      };
+
+      stepAnimationTimer = setInterval(() => {
+        if (player.position === targetPos) {
+          clearInterval(stepAnimationTimer);
+          stepAnimationTimer = null;
+          isAnimatingMovement = false;
+          stepAnimationFinishCallback = null;
+          updatePawns();
+          onDone();
+        } else {
+          player.position += stepDir;
+          playBeep(420 + player.position * 8, 'triangle', 0.04);
+          updatePawns();
+        }
+      }, 95);
+    }
+
+    /* =========================================================
+       9. GESTION DES EFFETS, ENCHAÎNEMENTS & AUTO-PLAY
+       ========================================================= */
+    function handleLanding(player, lastRoll, chainDepth = 0) {
+      if (player.position === 63) {
+        triggerVictory(player);
+        return;
+      }
+
+      const special = BOARD_MAPPING[player.position];
+      if (!special || chainDepth >= 4) {
+        nextTurn();
+        return;
+      }
+
+      if (chainDepth > 0) {
+        logMessage(`💥 <strong>Enchaînement !</strong> ${player.name} atterrit sur <strong>${special.name}</strong> !`);
+      }
+
+      setTimeout(() => {
+        triggerSpecial(player, special, lastRoll, chainDepth);
+      }, 150);
+    }
+
+    function applyBaseEffectAction(player, effectType, lastRoll, chainDepth = 0) {
+      switch (effectType) {
+        case 'oie':
+          logMessage(`🦢 <strong>${player.name}</strong> relance immédiatement les dés. Ni vu ni connu ! 🤫`);
+          isRolling = false;
+          document.getElementById('rollDiceBtn').disabled = false;
+          if (isAutoPlay) triggerAutoStep();
+          return;
+
+        case 'oie_trad':
+          logMessage(`🦢 Ni vu ni connu ! <strong>${player.name}</strong> avance à nouveau de son lancer (+${lastRoll} cases). 🤫`);
+          movePlayer(player, lastRoll, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'pythagore':
+          logMessage(`🪽 Pythagore ! <strong>${player.name}</strong> avance une seconde fois de ${lastRoll} cases.`);
+          movePlayer(player, lastRoll, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'objection':
+          logMessage(`⚖️ Objection ! <strong>${player.name}</strong> recule de 2 cases.`);
+          movePlayer(player, -2, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'chasse':
+          let target = players.filter(p => p.id !== player.id && p.position > player.position)
+                              .sort((a,b) => a.position - b.position)[0];
+          if (!target) {
+            target = players.filter(p => p.id !== player.id)
+                            .sort((a,b) => b.position - a.position)[0];
+          }
+          if (target && target.position !== player.position) {
+            const oldPos = player.position;
+            player.position = target.position;
+            target.position = oldPos;
+            logMessage(`🔄 <strong>${player.name}</strong> échange sa place avec <strong>${target.name}</strong> (Case ${player.position}) !`);
+            updatePawns();
+            updatePlayerStatusList();
+          } else {
+            logMessage(`🔄 Aucun joueur disponible pour l'échange.`);
+          }
+          nextTurn();
+          return;
+
+        case 'blocus':
+          const maxPos = Math.max(...players.map(p => p.position));
+          const isLeader = player.position === maxPos;
+          const N = players.length;
+
+          if (isLeader) {
+            logMessage(`✊ Blocus ! <strong>${player.name}</strong> est en tête : recul de ${N} cases !`);
+            movePlayer(player, -N, () => handleLanding(player, lastRoll, chainDepth + 1));
+          } else {
+            logMessage(`✊ Blocus ! <strong>${player.name}</strong> n'est pas en tête : avance de ${N} cases !`);
+            movePlayer(player, N, () => handleLanding(player, lastRoll, chainDepth + 1));
+          }
+          return;
+
+        case 'pont':
+          logMessage(`🌉 <strong>${player.name}</strong> avance de 6 cases sur le pont d'Avignon.`);
+          movePlayer(player, 6, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'pont_trad':
+          if (player.position !== 12) {
+            logMessage(`🌉 Raccourci du Pont d'Avignon ! <strong>${player.name}</strong> file directement à la case 12. 🤪`);
+            animateSteps(player, 12, () => handleLanding(player, lastRoll, chainDepth + 1));
+          } else {
+            nextTurn();
+          }
+          return;
+
+        case 'auberge':
+          player.skipTurns = 1;
+          logMessage(`😴 Nuit blanche pour <strong>${player.name}</strong> : prochain tour passé.`);
+          nextTurn();
+          return;
+
+        case 'auberge_trad':
+          player.skipTurns = 2;
+          logMessage(`😴 Nuit blanche sévère pour <strong>${player.name}</strong> : 2 tours passés !`);
+          nextTurn();
+          return;
+
+        case 'puits':
+          const otherInWell = players.find(p => p.id !== player.id && p.position === player.position && p.inTrap);
+          if (otherInWell) {
+            otherInWell.inTrap = false;
+            otherInWell.skipTurns = 0;
+            logMessage(`🧻 <strong>${player.name}</strong> donne ses mouchoirs à <strong>${otherInWell.name}</strong> et prend sa place aux toilettes !`);
+          } else {
+            logMessage(`🕳️ <strong>${player.name}</strong> est coincé aux toilettes sans PQ !`);
+          }
+          player.inTrap = true;
+          player.skipTurns = 3;
+          nextTurn();
+          return;
+
+        case 'detention':
+          const otherInDetention = players.find(p => p.id !== player.id && p.position === player.position && p.inTrap);
+          if (otherInDetention) {
+            otherInDetention.inTrap = false;
+            otherInDetention.skipTurns = 0;
+            logMessage(`⛓️ <strong>${player.name}</strong> accuse <strong>${otherInDetention.name}</strong> et prend sa place en détention !`);
+          } else {
+            logMessage(`⛓️ <strong>${player.name}</strong> est envoyé en détention pour fraude ! 🫩`);
+          }
+          player.inTrap = true;
+          player.skipTurns = 3;
+          nextTurn();
+          return;
+
+        case 'labyrinthe_trad':
+          logMessage(`🌧️ Alerte Inondation ! <strong>${player.name}</strong> fait demi-tour jusqu'à la case 30.`);
+          animateSteps(player, 30, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'mort_trad':
+          logMessage(`💀 M. Matrouf ramène <strong>${player.name}</strong> tout droit à la case départ (case 1) !`);
+          animateSteps(player, 1, () => nextTurn());
+          return;
+
+        case 'inondation':
+          logMessage(`🌧️ Inondation ! <strong>${player.name}</strong> recule de 4 cases.`);
+          movePlayer(player, -4, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'translation':
+          logMessage(`🍃 Translation mathématique ! <strong>${player.name}</strong> avance de 3 cases.`);
+          movePlayer(player, 3, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+
+        case 'driss':
+          logMessage(`💀 Panique ! <strong>${player.name}</strong> aperçoit M. Matrouf et recule de 8 cases !`);
+          movePlayer(player, -8, () => handleLanding(player, lastRoll, chainDepth + 1));
+          return;
+      }
+    }
+
+    function triggerSpecial(player, special, lastRoll, chainDepth = 0) {
+      if (special.type === 'chance') {
+        const deck = currentSelectedMode === 'harr' ? BASE_SPECIAL_CASES_DECK_HARR : BASE_SPECIAL_CASES_DECK_MODERNE;
+        const picked = deck[Math.floor(Math.random() * deck.length)];
+
+        logMessage(`🔮 <strong>${player.name}</strong> consulte son horoscope et tire la carte : <strong>${picked.name}</strong> (${picked.effect}) !`);
+
+        if (isAutoPlay) {
+          setTimeout(() => {
+            applyBaseEffectAction(player, picked.type, lastRoll, chainDepth);
+          }, 400);
+          return;
+        }
+
+        showModal(
+          '🍀', 
+          "C'est quoi ton signe astrologique ?", 
+          `Effet pioché : ${picked.icon} ${picked.name}`, 
+          `Ton horoscope est formel ! Tu tires la carte <strong>${picked.name}</strong> :<br><br>${picked.desc}`, 
+          picked.effect
+        );
+        pendingAction = () => {
+          applyBaseEffectAction(player, picked.type, lastRoll, chainDepth);
+        };
+        return;
+      }
+
+      if (isAutoPlay) {
+        logMessage(`${special.icon} <strong>${special.name}</strong> : ${special.effect}`);
+        setTimeout(() => {
+          applyBaseEffectAction(player, special.type, lastRoll, chainDepth);
+        }, 400);
+        return;
+      }
+
+      showModal(special.icon, special.name, special.subtitle, special.desc, special.effect);
+      pendingAction = () => {
+        applyBaseEffectAction(player, special.type, lastRoll, chainDepth);
+      };
+    }
+
+    /* MODALE INFOS CASES */
+    function showModal(icon, title, subtitle, desc, effect) {
+      if (isAutoPlay) return;
+      document.getElementById('modalIcon').textContent = icon;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalSubtitle').textContent = subtitle;
+      document.getElementById('modalDesc').innerHTML = desc;
+      document.getElementById('modalEffect').textContent = effect;
+      
+      const btn = document.getElementById('modalBtn');
+      btn.textContent = "D'accord, ma biche !";
+      btn.onclick = closeModal;
+      document.getElementById('modalOverlay').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+      if (pendingAction) {
+        const action = pendingAction;
+        pendingAction = null;
+        action();
+      }
+    }
+
+    function showCellInfo(cellNum) {
+      const special = BOARD_MAPPING[cellNum];
+      if (special) {
+        showModal(special.icon, `${cellNum}. ${special.name}`, special.subtitle, special.desc, special.effect);
+      } else if (cellNum === 1) {
+        showModal('🏁', 'Case 1 - Départ', 'Entrée de la fac', 'Le parcours commence ici.', 'Lancer les dés');
+      } else if (cellNum === 63) {
+        showModal('🏆', 'Case 63 - Diplôme', 'Arrivée finale', 'Le cœur de La fac de l\'Oie.', 'Atteindre pile 63 pour valider l\'année');
+      }
+    }
+
+    /* TOURS & FIN DE PARTIE */
+    function nextTurn() {
+      if (gameOver) return;
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+      currentTurnCall = POKEMON_SWITCH_CALLS[Math.floor(Math.random() * POKEMON_SWITCH_CALLS.length)];
+      
+      isRolling = false;
+      document.getElementById('rollDiceBtn').disabled = false;
+      updatePlayerStatusList();
+      updatePawns();
+
+      if (isAutoPlay) {
+        triggerAutoStep();
+      }
+    }
+
+    function logMessage(text) {
+      const box = document.getElementById('logBox');
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML = text;
+      box.appendChild(item);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function triggerVictory(winner) {
+      gameOver = true;
+      isRolling = false;
+      disableAutoPlay();
+      playBeep(880, 'sine', 0.5);
+      logMessage(`🎉🏆 <strong>Victoire pour ${winner.name} ! L'année est validée !</strong>`);
+      
+      document.getElementById('modalIcon').textContent = '👑';
+      document.getElementById('modalTitle').textContent = `Victoire pour ${winner.name} !`;
+      document.getElementById('modalSubtitle').textContent = 'Major de Promo';
+      document.getElementById('modalDesc').innerHTML = `GG ! Malgré les blocus, les inondations et Driss, tu as finalement pu décrocher ton diplôme au CERI ! 🎓`;
+      document.getElementById('modalEffect').textContent = 'Partie terminée avec succès';
+      
+      const btn = document.getElementById('modalBtn');
+      btn.textContent = "Rejouer une partie 🔄";
+      btn.onclick = () => {
+        document.getElementById('modalOverlay').style.display = 'none';
+        stopConfetti();
+        openSetupModal(true);
+      };
+      
+      document.getElementById('modalOverlay').style.display = 'flex';
+      startConfetti();
+    }
+
+    /* GESTION & ARRÊT DES CONFETTIS */
+    let confettiAnimId = null;
+
+    function stopConfetti() {
+      if (confettiAnimId) {
+        cancelAnimationFrame(confettiAnimId);
+        confettiAnimId = null;
+      }
+      const canvas = document.getElementById('confettiCanvas');
+      if (canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function startConfetti() {
+      stopConfetti();
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 4,
+          speed: Math.random() * 4 + 2,
+          color: ['#8b5cf6', '#ec4899', '#06b6d4', '#f59e0b', '#10b981'][Math.floor(Math.random() * 5)]
+        });
+      }
+
+      function render() {
+        if (!gameOver) {
+          stopConfetti();
+          return;
+        }
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+          p.y += p.speed;
+          if (p.y > canvas.height) p.y = -10;
+        });
+        confettiAnimId = requestAnimationFrame(render);
+      }
+      confettiAnimId = requestAnimationFrame(render);
+    }
+
+    // Initialisation
+    renderPlayerInputs();
+    setGameMode('moderne');
+    openSetupModal(false);
+  </script>
+</body>
+</html>

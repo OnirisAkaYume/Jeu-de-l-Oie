@@ -1,0 +1,495 @@
+----- Prompts envoyés à l'IAG lors de la création du Jeu de l'Oie -----
+(Il y a beaucoup de faute, et c'est parce qu'à force j'en avais un peu marre donc j'écrivais vite, et pour vous donner une idée, ça m'a pris 2 journées entières, si on met de coté la séance du cours de méthodo que j'ai passé principalement avec ChatGPT, à cause de mon coté perfectionniste, de ma créativité qui venait petit à petit, et de mes problème de mémoire qui me faisait oublié ce que je voulais modifier ou vérifier en premier lieu)
+
+--- IAG : ChatGPT ---
+
+-- Etape 1 : Conceptualisation --
+
+[[Jour 0]]
+
+(J'ai d'abord discuté avec ChatGPT pour avoir une idée globale du projet)
+
+Les cases que je voulais dans mon jeu :
+	🦢
+	L'Oie -> Ni vu ni connu
+	Relancer les dés -> Les autres joueurs se sont fait distraire par leurs telephones, tu en profites pour tricher et relancer les dés
+	26
+	🪽
+	Double foulée -> Pythagore
+	Répéter le déplacement -> Tu sors le théorème de Pythagore pour calculer le double du montant (tu t'es trompé de formule mais ton aura a convaincu les autres)
+	20
+	↩️
+	Recul -> Objection
+	−2 cases -> Les autres joueurs t'ont accusé de triche, tu recules de 2 cases
+	18
+	🔄
+	Échange devant -> qui part à la chasse pert sa place
+	Échanger sa place avec le joueur devant -> Un joueur est parti au toilette, tu as échanger les places de vos pions
+	16
+	⚖️
+	Équilibre peloton -> Blocus
+	Avancer ou reculer selon le classement -> Tu fais un blocus contre le déséquilibre de la progression des joueurs
+	18
+	🍀
+	Carte Chance -> Chance
+	Piocher une carte -> Tu lis ton horoscope du jour, il dit que tu as droit à une carte
+	24
+	🌉
+	Le Pont -> Pont d'Avignon
+	+6 cases -> Tu aura farm sur le pont d'Avignon, par pitié les autres joueurs t'accordes 6 cases de plus
+	14
+	🛏️
+	L'Auberge -> Nuit blanche
+	Passer un tour -> Tu t'es laissé convaincre par l'appel des réseaux sociaux et tu as doom scroll toute la nuit
+	🌀
+	Labyrinthe -> Inondation
+	−4 cases -> Alerte inondation, reculer de 4 cases
+	12
+	🍃
+	Vent arrière -> Translation
+	+3 cases -> Tu as fait une translation de 3 cases en avant
+	18
+	💀
+	Faux pas -> M. Driss
+	−8 cases -> Tu as vu M. Driss arriver et dans la panique, tu as fuis dans la mauvaise direction
+	7
+
+Reformulation par L'IAG : 
+🎲 Tes cases du jeu de l'oie — version pimpée
+	🦢
+	Ni vu ni connu
+	Relancer les dés
+	Les autres joueurs sont trop occupés à scroller sur leur téléphone. Tu en profites pour relancer les dés discrètement. Ni vu ni connu. 😎
+	Poids : 26
+	🪽
+	Pythagore
+	Double déplacement
+	Tu sors le théorème de Pythagore pour calculer le double de ton lancer. Tu t'es complètement trompé de formule, mais ton aura a convaincu tout le monde. Tu avances une seconde fois du même nombre de cases. 📐
+	Poids : 20
+	↩️
+	Objection !
+	−2 cases
+	Les autres joueurs t'accusent de triche et réclament justice. OBJECTION ! Malheureusement, le tribunal a tranché : recule de 2 cases. ⚖️
+	Poids : 18
+	🔄
+	Qui part à la chasse perd sa place
+	Échange de places
+	Un joueur est parti aux toilettes sans surveiller son pion. Tu saisis cette occasion en or pour échanger vos places. Il fallait rester vigilant. 🚽
+	Poids : 16
+	⚖️
+	Blocus
+	Équilibrage du peloton
+	Tu refuses cette injustice flagrante : certains joueurs avancent beaucoup trop vite ! Tu imposes un blocus pour rétablir l'équilibre. Si tu es en tête, recule du nombre de joueurs ; sinon, avance d'autant de cases. ✊
+	Poids : 18
+	🍀
+	C'est écrit dans les étoiles
+	Carte Chance
+	Tu consultes ton horoscope du jour. Il est formel : la chance est de ton côté et tu as droit à une carte Chance. Qui es-tu pour contredire les astres ? 🔮
+	Poids : 24
+	🌉
+	Pont d'Avignon
+	+6 cases
+	Tu as farmé ton aura sur le pont d'Avignon. Impressionnés par ta performance, les autres joueurs t'accordent généreusement 6 cases supplémentaires. Sur le pont, on y avance, on y avance… 🎶
+	Poids : 14
+	🛏️
+	Nuit blanche
+	Prochain tour perdu
+	Tu voulais juste regarder une vidéo avant de dormir. Trois heures de doomscroll plus tard, il est 5 h du matin. Tu es en PLS : passe ton prochain tour. 📱
+	Poids : 12
+	🌀
+	Inondation
+	−4 cases
+	ALERTE INONDATION ! Les routes sont impraticables et tu dois faire demi-tour. Recule de 4 cases pour éviter la catastrophe. 🌧️
+	Poids : 12
+	🍃
+	Translation
+	+3 cases
+	Une translation de vecteur \(\vec{u}\) te déplace de 3 cases vers l'avant. Enfin un peu de maths qui sert à quelque chose en dehors des contrôles ! 📏
+	Poids : 18
+	💀
+	M. Driss
+	−8 cases
+	Tu aperçois M. Driss au loin. Pris de panique, tu pars en courant dans la direction opposée… sauf que tu as choisi la mauvaise. Tu recules de 8 cases. 🏃💨
+	Poids : 7
+
+-- Etape 2 : Génération du code --
+(listes des prompts)
+
+- okie est ce que tu peux coder ca en html
+
+- okie est-ce que tu peux modifier le plateau pour que ca resemble plus a un plateau? la c'est juste un tableau de case
+
+[A ce stade, GPT ne pouvait plus faire d' "analyses de données avancée"]
+
+- User : pas grave, fait une fiche de tout ce que j'ai dit pour que je puisse garder la progression du projet
+
+[J'ai copié sa réponse puis je l'ai collé à un autre bot]
+
+--- IAG : AI Studio ---
+
+[Il n'y avait pas les version réécrites de ChatGPT des cases dans la fiche donc je les ai envoyé à Studio]
+
+[[Jour 1]]
+
+- bug : quand on survole les cases, quand les pions bougent, et surement dans d'autres types d'animation, le sprite bouge tres rapidement d'un point à un autre en constance jusqu'a que l'animation se termine
+suggestion: les noms des joueurs par défauts seront, dans cette ordre, Aminata, Mariane, Océane, Rihanna
+suggestion: Le titre du jeu ne sera plus "Jeu de l'Oie cosy et mystique" mais sera "Jeu de l'Oie" et le sous-titre ne sera plus "Spirale infinie de 63 cases • Ambiance nocturne • Coups bas et humour garanti" mais sera "Edition CERI • Feat. Driss • Sponsorisé par Gen Z"
+
+- le jeu fonctionne super bien, c'est presque parfait, maintenant je vais surtout
+faire des suggestions textuels ou contextuel, donc pas besoind de toucher le
+gameplay et le fonctionnement des animations ou autres pour l'instant
+
+- suggestions: Le nom de la fenetre est "Jeu de l'Oie - Edition Ceri • Feat.
+Driss" je crois, je voudrais le changer en "Jeu de l'Oie - Edition CERI"
+simplement; Le cadre de la spirale s'appelle "Le sanctuaire de l'Oie (1->63)" je
+voudrais le changer en "La fac de l'Oie"; Au debut du jeu, quand on choisi le
+nombre de joueurs et leurs noms, j'aimerais qu'un cadre apparais par dessus le
+jeu, le jeu etant en flou en arrière plan (comme quand on clique sur une case
+pour avoir leur info), et dans le cadre on met le choix du nombre de joueurs et
+leurs noms pour plus de visibilité; A la fin de la partie, j'aimerai que ce meme
+cadre réapparait pour demander si on veut faire une partie et puis redemande le
+nombre de joueurs et leurs noms
+
+- suggestions: a la place de "Bien reçu !" sur les boutons, je voudrais "D'accord,
+ma biche !"; est-ce que l'emplacement des cases pourrait etre randomiser à
+chaque partie? pour la case Pont d'Avignon, j'aimerai modifier par "Tu aura farm
+sur le pont d'Avignon. Par pitié, les autres joueurs t'accordent 6 cases
+supplémentaires. Adieu la dignité, bonjour la victoire ! 🏆" met "aura farm" en
+italique si possible, tu peux reformuler un petit peu pour que ca soit plus
+naturel si necessaire sans changer les mots clés; pour la case Nuit blanche,
+j'aimerai modifier par "Tu regarde une dernière petite vidéo avant de te
+coucher, puis une autre, puis une autre, puis encore une autre, et finalement il
+est 6h du mat. Tu ne tiens plus debout : passe ton prochain tour. 📱" tu peux
+reformuler un petit peu pour que ca soit plus naturel si necessaire; pour
+translation est-ce qu'il est possible de mettre le caracteur de vecteur u à la
+place du u simple? pour la case M. Driss, j'aimerai la renommer "Driss" et
+modifier l'info par "Tu aperçois M. Matrouf au loin. Pris de panique, tu pars en
+courant dans la mauvaise direction. Tu te retrouve 8 cases en arrière. 🏃💨" tu
+peux reformuler un petit peu pour que ca soit plus naturel si necessaire; pour
+la case Inondation, j'aimerai modifier par "ALERTE INONDATION ! Les routes sont
+impraticables et tu dois faire demi-tour. Recule de 4 cases pour éviter le
+déluge. 🌧️" tu peux reformuler un petit peu pour que ca soit plus naturel si
+necessaire; pour la case C'est écrit dans les étoiles, j'aimerai la renommer
+"C'est quoi ton signe astrologique?" et modifier l'info par "Tu consultes ton
+horoscope du jour pour la blague : c'est ton jour de chance, tu as droit à une
+carte Chance ! Toi qui disais que les signes astrologiques étaient overrated,
+voila que tu retourne ta veste maintenant que ça t'arrange. 🔮" tu peux
+reformuler un petit peu pour que ca soit plus naturel si necessaire; pour la
+case Blocus, j'aimerai que tu retires juste le mot "flagrante"; pour la case
+Objection, j'aimerai que dans l'info tu deplaces "OBJECTION !" au debut de la
+phrase à la place; pour la case Pythagore, j'aimerai modifier par "Tu sors le
+théorème de Pythagore pour calculer le double de ton lancer (tu t'es trompé de
+formule, mais ton aura a convaincu tout le monde). Tu avances une seconde fois
+du même nombre de cases. 📐" tu peux reformuler un petit peu pour que ca soit
+plus naturel si necessaire; pour les cartes chances j'aimerai reformuler un peu,
+donne moi des idées (sans modifier celles du jeu) et je te dirais ce que je
+préfère
+
+Propositions des cartes Chances : 
+🔮 Idées de reformulation pour les Cartes Chance (ambiance CERI / Vie étudiante / Gen Z)
+Voici plusieurs propositions décalées et humoristiques parmi lesquelles piocher. Dis-moi lesquelles tu préfères ou si tu veux ajuster les valeurs de déplacement :
+Options « Bonus » (Avancer)
+« Masterclass sur le projet » (+3 cases)
+« Ton code compile du premier coup sans aucun warning. Même le prof n'y croit pas. Tu avances de 3 cases. »
+« La pause snack bénie » (+2 cases)
+« Le distributeur du CERI bug et fait tomber deux barres chocolatées au lieu d'une. Un shot de dopamine inespéré : avance de 2 cases. »
+« Rapprochement astral » (+4 cases)
+« Tu as un date avec ton crush du bâtiment C. Tu cours pour ne pas être en retard : avance de 4 cases. »
+« Aura infinie » (+3 cases)
+« Tu as sorti une réponse au pif en amphi et c'était exactement la bonne. Les regards d'admiration te propulsent de 3 cases en avant. »
+Options « Malus » (Reculer)
+« Oubli fatal » (−3 cases)
+« Tu arrives devant la porte de la salle : tu as oublié ton badge étudiant chez toi. Demi-tour honteux : recule de 3 cases. »
+« Le wifi du campus en sueur » (−2 cases)
+« Eduroam a sauté en plein rendu de devoir. Tu paniques en partage de connexion 3G : recule de 2 cases. »
+« La batterie en PLS » (−4 cases)
+« Ton PC portable s'éteint à 1% sans chargeur à portée. Tu dois traverser le bâtiment pour trouver une prise libre : recule de 4 cases. »
+« Karma instantané » (−2 cases)
+« Tu as rigolé quand quelqu'un a fait tomber sa trousse en amphi… et tu t'es cogné le genou dans la table deux secondes plus tard. Recule de 2 cases. »
+
+- j'aime bien le 2 et 4 des bonus, et 3 et 4 des malus
+
+- suggestion: pour translation, remet un u simple et remet l'emoji equaire comme
+logo pour "aura farm" qui est en italique, remet la couleur normale pour
+"overrrated" met en italique aussi, mais laisse la couleur de base
+
+- remet les emojis des logos d'avant
+
+- suggestion: possibilité de changer la couleur des pions (tu peux mettre une
+option de palette par defaut et aussi une option de la roue des couleurs pour
+donner plus de possibilité); ajoute une option qui permet de relancer une
+partie, une option qui permet de changer les joueurs (nombre, noms, couleur);
+une option pour changer de theme (la par exemple c'est violet, on pourrait
+proposer des themes par defaut genre galaxie dans les tons violet et rose,
+coucher de soleil dans les tons rose et orange, theme océan, theme jus d'orange,
+theme vegan, theme marshmallow, etc essaye de toucher toute les couleurs, pour
+les themes c'est jsute des couleurs il y a pas de motifs en soit, met des
+version pastel et des version sombre, met aussi une version noir, et mets aussi
+une option ou on peut choisir deux couleurs et ca change les couleurs du jeu)
+
+- dans le jeu de l'oie, est-ce qu'on peut tirer une carte quand on veut ou que
+quand on tombe sur une case chance? si c'est quand on veut, ajoute un bouton
+piocher une carte, et aussi pour les cartes, peut tu checker le genre de carte
+on peut avoir dans une jeu traditionel de l'oie? Je crois que une carte chance
+nous donne les meme effet que les cases de base au pif, je suis pas sure mais si
+c'est vrai, alors ne reformule pas, juste reprend les info des cases de base
+
+- ajoute la possibilté d'avoir 5 ou 6 joueurs, nom par defaut "Maëlya" et
+"Yasmine" ajoute une option nom random pour chaque joueur (donc un bouton par
+joueur) et voici la liste des noms possible: Ziad Saber Khalil Yanis Quentin
+Dimitri Lina Issam Yasmine Matheo Geoffrey Mikael Noa Ayoub Maëlya Mariane Adam
+Hugo Elion Sabrina Stella Rihanna Maxime Amadou Julien Daniel Matteo Océane
+Aminata Yassir (si certain nom ont habituellement un accent, tu peux l'ajouter)
+
+- j'aimerai ajuster les themes: dark: rouge bordeau avec des tons violacé ->
+"Confiture de fraise" vert sauge sombre -> "Matcha" dégradé violet et rose ->
+"Galaxie" noir avec accent blanc argenté -> "Nuit" light: dégradé rose et orange
+clair -> "Coucher de soleil" dégradé jaune et orange -> "Miel" dégradé bleu ciel
+et rose pastel -> "Marshmallow"
+je veux que les couleurs resemblent à ce qu'ils sont censé représenté, par
+exemple pour coucher de solei cest pas n'importe quel orange ou rose, je veux
+ceux qu'on vois dans un vrai coucher de soleil
+
+- pour les themes je veux que au lieu de tout montrer d'un coup, tu mets un bouton
+pour switch entre clair et sombre, donc sur sombre ca affiche que les themes
+sombres, sur clair que les theme clairs, et pour la personalisation des couleurs
+de themes tu mets une première couleur et une deuxième pour faire un degradé et
+donc avec le switch ca fait sombre ou clair, pour la personalisation des
+couleurs des joueurs je veux refaire la palette completement, je veux un rouge,
+un orange, un jaune, un vert, un bleu ciel, un bleu marine, un violet, un rose,
+un noir, un blanc
+
+- rétréci le cadre de la spirale; dans les themes clairs les cases spécials sont
+toujours sombre donc il faut changer ça
+
+- ajout d'un theme clair: couleur creme et blanc "Vanille" ajustement de la
+couleur marine de la personalisation des joueurs, je veux indigo fait que les
+joueurs ne peuvent pas avoir la meme couleur ne touche pas à la taille du cadre
+et agrandi la spirale
+
+- ajoute une option "personaliser la partie" qui affiche un cadre dit "Cliquez ici
+pour personaliser le jeu" et ça redirige vers une video youtube de never gonna
+give you up de rick atsley cover kazoo
+
+- ajoute en bas de page une bouton "à propos de nous" qui affiche un cadre qui dit
+"Jeu proposé par une étudiante du CERI, avec beaucoup d'amour et beaucoup d'eau
+(l'IA vous remercie pour le rafraichissement)." avec en bas "P.S. J'avoue avoir
+la flemme de pousser la personnalisation d'avantage."
+
+- j'aimerai que le theme vanille soit la dernieère proposition et aussi j'aimerai
+que la couleur soit plus claire; pour le theme miel je veux qu'il soit plus
+jaune; pour le theme couché de soleil j'aimerai que le rose soit principale et
+le orange soit secondaire
+
+- la video que je veux pour le troll: www.youtube.com/watch?v=qRZQsdU6jN4
+ajustement du texte de "a propose de nous": "Jeu proposé par une étudiante du
+CERI, fait avec beaucoup d'amour, d'humour, et beaucoup d'eau aussi (l'IA vous
+remercie pour le rafraichissement)." couleur par defaut des joueurs, tu prend
+les 6 premieres couleurs de la palette
+
+- quand on change de nom de joueur, il faut qu'il soit enregistrer à chaque fois
+qu'on clique ailleurs, de manière que quand on clique sur un nombre different de
+joueurs, le nom reste agrandi juste un peu le cadre de la spirale
+
+- la case d'arrivé doit changer de couleur avec le theme, agrandi le cadre de la
+spirale encore un peu j'aimerai que sa taille s'ajuste à la taille de la fenetre
+
+- je veux un bleu plus clair et un rose plus bleuté pastel pour le theme
+marshmallow; je veux que tu retreci juste un tout petit le cadre de la spirale;
+pour la couleur de la case d'arrivé je veux qu'elle soit comme les autres cases
+mais dans le ton de la couleur pricipale du theme
+
+- je viens de remarquer qu'il ya une barre horizontal dans le cadre de la liste
+des joueurs, tu peux juste ajuster la taille du cadre pour qu'on puisse voir le
+noms des joueurs sans avoir à bouger horizontalement
+
+- dans le cadre "au tour de jouer" je voudrais que à chaque tours la phrase change
+pour afficher une phrase typique de pokemon quand on change de pokemon au
+combat, avec le nom du joueur qui doit jouer à la fin; dans le cadre journal de
+la partie j'aimerai changer le titre et la nommer "Prises de notes"; dans le
+meme cadre j'ai remarqué que quelque phrases sont genré, peux tu reformuler pour
+éviter les pronons genré; à la fin de la partie il y a "victoire de" mais
+certain nom pourrait commencer par une voyelle, modifie par "victoire pour " nom
+du joueur et pour le sous titre mets au debut "GG !" à la place de "Félicitation
+!"; à la fin de la partie apres avoir confirmé vouloir rejouer, les confettis ne
+disparraissent pas et retse figé, fais les disparaitre après avoir appuyer sur
+"recommencé"
+
+- modif "GG ! Tu as bravé Driss, le blocus et la fatigue pour triompher au CERI !"
+par "GG ! Malgré le blocus, les inondations et Driss, tu as pu finalement
+décrocher ton diplôme au CERI ! 🎓"
+
+- pour les phrase pokemons, j'aimerai limité les possiblité à 5 phrases
+differentes (jsp combien tu en as mis), et que le changement de phrase se fasse
+directement sans defilement; pour le message de fin mets "le blocus" au
+pluriel"; j'aimerai que le cadre de la liste des joueurs soit allongé
+verticalement pour que le nom des 6 joueurs soit affiché d'un coup et que le
+cadre garde cette taille meme quand il y a moins de joueurs; quand on commence
+une partie j'aimerai changer l'emoji par 🚌
+
+- par rapport au cartes chances, j'ai oublié de te repondre, j'aimerai que tu
+mettes les case de base; pour les phrases pokemon j'aimerai que ça change qu'une
+seule fois et que ca change une fois que l'animation du pion qui change de place
+se termine; aussi donne moi toutes les phrases qui existent dans les jeu
+pokemons quand on change de pokemon lors d'un combat, je vais choisir celles que
+je prefère; allonge le cadre de la listes des joueurs encore un peu plus, de
+manière que le coté sud du cadre en dessus, le journal de la partie, soit aligné
+avec le coté sud du cadre de la spirale (je sais pas si ca aide à "visualiser"
+le truc)
+
+- mets le theme nuit par defaut; ajoute au dessus du cadre de la spirale un logo
+de son qu'on peut cliquer pour activer ou desactiver le son et les bruitages du
+jeu; est-ce qu'on peut mettre un logo dans le nom de la feutre du jeu? si oui,
+j'aimreai mettre l'emoji oie tout simplement
+
+- pour les phrases pokemon, je veux 1, 2, 3, 6, 7, 10, 14, 15 (bon finalement ça
+fait 8 phrases mdr) d'ailleurs pour 3 je prefèrerais "Je te choisis"; pour la
+phrase de fin, deplace "finalement" avant "pu"
+
+- ajoute une option de mode (d'ailleurs tu devrais demander le mode en debut de
+partie aussi) qui propose le mode traditionnel, le mode moderne, et le mode harr
+(en italique le harr)
+
+mode traditionel (regle et effet du jeu de l'oie traditionnel): Type de
+case	Nombre habituel	Emplacements 🦢
+Oie	13	5, 9, 14, 18, 23, 27, 32, 36, 41, 45, 50, 54, 59 
+🌉 Pont	2 cases liées	6
+et 12 
+🛏️ Auberge	1	19 
+🕳️ Puits	1	31 
+🌀 Labyrinthe	1	42 
+⛓️ Prison	1	52 
+💀 Mort	1	58
+🏁 Arrivée	1	63 À noter : les deux cases du pont sont liées entre elles ; ce ne
+sont pas nécessairement deux événements indépendants. (change pas le nom des
+cases, juste l'effet, pour les cases qui n'est pas dans notre jeu actuel, tu
+peux les ajouter et tu me les mentionne et apres je te dirais quoi ecrire, je
+vois prison par exemple tu peux mettre détention)
+
+mode moderne (notre jeu actuelle) : Type personnalisé	Nombre ou placement
+traditionnel imposé ? Ni vu ni connu (Oie)	Inspiration traditionnelle :
+plusieurs cases réparties sur le parcours Pythagore (Double foulée)	Pas de
+position traditionnelle obligatoire Objection (Recul)	Pas de position
+traditionnelle obligatoire Qui part à la chasse perd sa place (Échange)	Pas de
+position traditionnelle obligatoire Blocus (Équilibre peloton)	Pas de position
+traditionnelle obligatoire Chance (Carte Chance)	Dépend des règles
+personnalisées Pont d’Avignon	Peut reprendre l’idée du pont classique Nuit
+blanche (Auberge)	Peut reprendre l’emplacement classique 19 Inondation
+(Labyrinthe)	Peut reprendre l’emplacement classique 42 Translation (Vent
+arrière)	Pas de position traditionnelle obligatoire M. Driss (Faux pas)	Peut
+reprendre l’idée de la case Mort, mais pas nécessairement son effet Les poids de
+ton exemple sont : 26, 20, 18, 16, 18, 24, 14, 12, 12, 18 et 7. Attention : un
+poids n’est pas automatiquement un nombre d’apparitions. Si ton professeur
+utilise ces valeurs comme des poids de probabilité, les cases ayant un poids
+plus élevé seront plus susceptibles d’être choisies.
+
+mode harr: tu reprend notre mode de base et tu change le poids des case de
+manière que les cases malus apparaisent plus souvent que les bonus
+
+[[Jour 2]]
+
+- enleve l'emoji dans le nom de la fenetre; ajoute l'option de changer le mode a
+cote des autre option comme changer le theme et changer les joueurs
+
+- je voulais que le bouton son soit au dessus du cadre spirale, pas dedans; je
+voudrais que quand tu mets traditionnel tu mets par defaut le theme vanille,
+pour moderne theme galaxie et pour harr theme confiture de fraise, l'idée est
+que le theme change en meme temps que tu clique sur un mode different, mais si
+l'utilisateur à deja cliqué sur un theme en particulier au moins une fois, le
+theme ne change plus automatiquement et garde le choix actuel de l'utilisateur;
+j'aimerai ajouter une musique pour chaque mode qui peuvent evidemment etre
+desactiver avec le bouton son, mode trad : www.youtube.com/watch?v=quxTnEEETbo,
+mode moderne : www.youtube.com/watch?v=fsFLc2JZQdE, mode harr :
+www.youtube.com/watch?v=uivFFnCI8tM, si tu as besoin d'autre chose pour les
+musique que les liens youtube ne peuvent pas etre utlisé comme ça, tu peux me
+dire comment faire pour avoir de la musique; pour le mode trad je voudrait que
+les cases reprennent le noms des cases du mode moderne mais laisse les effets et
+les info traditionels, pour detention du coup tu laisse le nom actuel et pour
+puit tu mets "toilettes sans PQ", je donnerais les info de chaque cases apres
+
+- j'ai mis les musiques dans le meme dossier que le fichier html, je les ai nommé
+"MusicModeTrad", "MusicModeModern", "MusicModeHarr"; pour le bouton son, je ne
+veut pas de nom, je veux que l'emoji comme logo; pour les cases du mode
+traditionel : pour oie tu modif l'info par "Les autres joueurs sont trop occupés
+à scroller sur leur téléphone. Tu en profites pour avancer ton pion du double du
+montant des dés. Ni vu ni connu. 😎" , pour le pont tu modif l'info par "Tu aura
+farm sur le pont d'Avignon. Mais personnes ne s'est arrêté pour t'admirer : tu
+te venges en empruntant un raccourci qui t'amène directement à la case 12. 🤪",
+pour l'auberge "Tu regardes une dernière petite vidéo avant de te coucher, puis
+une autre, puis une autre, puis encore une autre, et finalement il est 6h du
+mat. Tu ne tiens plus debout : passe tes 2 prochains tours. 📱", pour le puit le
+logo sera l'emoji puit de base et l'info sera "La poisse ! Tu viens de faire ta
+grosse commission sans te rendre compte plus tôt qu'il n'y a plus de PQ !
+Attends qu'un camarade vienne t'aider et te donnes tous ses mouchoirs. (Il aura
+une envie pressante juste après et prendra ta place.) 🧻" , pour labyrinthe
+"ALERTE INONDATION ! Les routes sont impraticables et tu dois faire demi-tour.
+Retourne à la case 30 pour éviter le déluge. 🌧️" , pour mort "Tu aperçois M.
+Matrouf au loin. Malheureusement, tu n'as pas eu le temps de fuir. Il a commencé
+à jacasser sur sa vie tout en se dirigeant vers l'entrée de la fac. Tu l'a
+suivie sans te rendre compte : te voila de nouveau à la case départ. 💀" , pour
+prison tu garde détention et pour l'info tu mets "Tu as été accusé de fraude !
+Tu es envoyé en détention à la case 52. Tu dois attendre qu'un camarade y
+atterrisse pour l'accuser à ta place ou attendre 3 tours. 🫩" , si il y a des
+fautes corrige les avant de les mettre dans le jeu ; pour tous les modes, modif
+l'emoji telephone dans l'info de l'auberge par l'emoji 😴 et modif l'emoji
+lunette de soleil dans l'info de ni vu ni connu par 🤫; pour le mode harr ajoute
+les cases qu'il y a dans le mode trad et qui n'est pas dans le mode modern,
+j'aimerai que ça soit un melange des deux modes en plus dure (donc meme les
+cases qui sont equivalmente mais qui ont un effet differents, tu mets les deux)
+et n'hesite pas à augmenter le nombre de malus et diminuer le nombre de bonus,
+et les case comme mort tu les place vers la fin comme ca si tu tombes dessus tu
+dois vraiment tout refaire, ce genre de coup qui attise la frustration, tu fais
+ca quoi
+
+- pour le textes sur les boutons de confirmation (daccord ma biche, appliquer,
+etc), je veux qu'il soit blanc; pour le texte sur le bonton switch clair sombre
+je veux qu'il soit blanc quand on est dans le mode sombre; quand on mets mode
+trad dans le choix du theme le switch est sur sombre, mets le sur clair; aussi
+question on ne peux pas selectionner de texte, genre si je vouler copier l'info
+d'une case beh je ne peux pas car je ne peux meme pas selectionner, est-ce
+normal?
+
+- remet 'user-select' a none, et si possible active le que pour les infos des
+cases; j'aimerais que pour chaque mode tu ecris en bas a droite le nom de la
+musique qui joue, donc pour mode trad c'est Ronda Alla Turca de Mozart, pour
+moderne c'est xddcc de gooseworx je crois, et pour harr c'est black knife de
+toby fox; place le bouton son juste à coté des autres options joueurs theme et
+tout, mais je veux que son coté droit soit aligné avec le coté droit de la
+spirale
+
+- ce qui affoche la musqiue doit maintenant etre un bouton qui te laisse chosir
+quelle musique tu prefère, une fois la musique modifier, elle ne chnage plus
+automatiquement; aussi essyae dereduire l'espace entre le bouton son et les
+autres options; pour case puit modif par "La poisse ! Tu viens de faire ta
+grosse commission sans te rendre compte plus tôt qu'il n'y avait plus de PQ : tu
+dois attendre qu'un camarade vienne t'aider et te donne tous ses mouchoirs. (Il
+aura une envie pressante juste après et prendra ta place.) 🧻"; pour case chance
+"Tu consultes ton horoscope du jour pour la blague : on dirait que tu as droit à
+une carte Chance ! Et toi qui pensais que l'astrologie était overrated, voilà
+que tu retournes ta veste maintenant que ça t'arrange. 🥴" d'ailleurs les mots en
+italique dans les info ne sont pas selectionable, change ça
+
+- quand on a l'effet d'une case qui nous fait avancer ou reculer et si on tombe
+sur une uatre case speciale, est-ce que dans le jeu de l'oie habituel on a
+aussii l'effet de l'autre case aussi? dans notre jeu actuel je vois que non mais
+si habituellemnt le jeu de l'oie marche de maniere que quahnd on tombe sur un e
+autre case, on a son efffet, alors faut 'lajouter, sinon tu laisses comme c'est,
+mais c apourrait etre marrnat de le mettre pour le mode harr; j'aimerai que
+quand c'est le tour d'un joueur, son pion est mis en avant, ou qu'il bouge zoom
+in zomm out pour mieux le voir; je voudrais que l'animation soit skipé en
+cliquant dans le vide si possible
+
+- j'aimerai bien un bouton "automatique" a cocher ou décocher du coté gauche du
+bouton son qui fait lancer les dés sans qu'on ait à le faire et donc les popup
+des cases speciales n'apparaient pas non plus, par contre il se désactive
+automatiquement quand on clique dans le vide ; dans le journal ajoute les notif
+pour dire quand on a pioché une carte chance; parcontre la tu bug tu ne m'envoie
+plus le fichier du html que j epeux juste copier ou telecharger et cest pas
+pratique, regle ce problme
+
+- pour le auto qui se désactive et pour le skip des animations, je voudrais que ca
+se fasse quand on clique pas que dans le vide, meme sur un bouton, aussi je
+voudrais que les options avec le son les joueurs et tout qu'ils soient centré
+donc tu peux oublier cette histoire d'alignenment
+
+FIN

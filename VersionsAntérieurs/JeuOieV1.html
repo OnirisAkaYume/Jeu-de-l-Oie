@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jeu de l'Oie — Edition CERI • Feat. Driss</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-main: #0a0614;
+      --bg-card: #140d28;
+      --bg-card-hover: #20153f;
+      --border-color: #2e1d52;
+      --purple-primary: #8b5cf6;
+      --purple-light: #d8b4fe;
+      --purple-glow: rgba(139, 92, 246, 0.4);
+      --pink-accent: #ec4899;
+      --gold-accent: #f59e0b;
+      --cyan-accent: #06b6d4;
+      --emerald-accent: #10b981;
+      --text-main: #f5f3ff;
+      --text-muted: #9e8fc5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      background: radial-gradient(circle at 10% 10%, #1c0e3b 0%, var(--bg-main) 60%),
+                  radial-gradient(circle at 90% 90%, #260d45 0%, var(--bg-main) 70%);
+      color: var(--text-main);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 16px 12px;
+      overflow-x: hidden;
+    }
+
+    /* HEADER */
+    header {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    header h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, #ffffff 15%, var(--purple-light) 60%, var(--pink-accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+      margin-bottom: 2px;
+      text-shadow: 0 0 35px var(--purple-glow);
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+    }
+
+    /* LAYOUT */
+    .app-layout {
+      display: flex;
+      gap: 20px;
+      max-width: 1500px;
+      width: 100%;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    @media (max-width: 1100px) {
+      .app-layout {
+        flex-direction: column-reverse;
+        align-items: center;
+      }
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: 360px;
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (max-width: 1100px) {
+      .sidebar {
+        width: 100%;
+        max-width: 780px;
+      }
+    }
+
+    .panel {
+      background: rgba(20, 13, 40, 0.85);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+    }
+
+    .panel h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.15rem;
+      color: var(--purple-light);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* CONFIGURATION */
+    .setup-group {
+      margin-bottom: 12px;
+    }
+
+    .setup-group label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-pill {
+      flex: 1;
+      padding: 8px;
+      background: #191032;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+
+    .btn-pill.active {
+      background: var(--purple-primary);
+      border-color: var(--purple-light);
+      box-shadow: 0 0 14px var(--purple-glow);
+    }
+
+    .player-inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .player-input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #110a22;
+      padding: 8px 12px;
+      border-radius: 10px;
+      border: 1px solid #231640;
+    }
+
+    .p-badge {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    .player-input-row input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      width: 100%;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(135deg, var(--purple-primary), var(--pink-accent));
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+      margin-top: 8px;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(236, 72, 153, 0.5);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* PLAYER STATUS LIST */
+    .players-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .player-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: 12px;
+      background: #110923;
+      border: 1px solid #251642;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .player-card.active-turn {
+      border-color: var(--purple-primary);
+      background: linear-gradient(90deg, rgba(139, 92, 246, 0.22), #110923);
+      box-shadow: 0 0 18px var(--purple-glow);
+      transform: scale(1.02);
+    }
+
+    .player-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .player-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .player-status {
+      font-size: 0.75rem;
+      color: var(--pink-accent);
+      margin-left: 4px;
+      font-weight: 600;
+    }
+
+    .player-pos-badge {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: #1f143c;
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: var(--purple-light);
+      border: 1px solid #362261;
+    }
+
+    /* DICE AREA */
+    .dice-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0 4px;
+    }
+
+    .dice-container {
+      display: flex;
+      gap: 16px;
+    }
+
+    .die {
+      width: 58px;
+      height: 58px;
+      background: linear-gradient(145deg, #2b1c4e, #160e2a);
+      border: 2px solid var(--purple-primary);
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: #fff;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(139, 92, 246, 0.4);
+      transition: transform 0.2s ease;
+    }
+
+    .die.rolling {
+      animation: diceShake 0.45s ease infinite alternate;
+    }
+
+    @keyframes diceShake {
+      0% { transform: rotate(-18deg) translateY(-6px); }
+      100% { transform: rotate(18deg) translateY(6px); }
+    }
+
+    /* LOGS */
+    .log-box {
+      height: 200px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding-right: 4px;
+      font-size: 0.82rem;
+    }
+
+    .log-box::-webkit-scrollbar {
+      width: 5px;
+    }
+    .log-box::-webkit-scrollbar-thumb {
+      background: #392468;
+      border-radius: 4px;
+    }
+
+    .log-item {
+      padding: 6px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.03);
+      line-height: 1.35;
+      border-left: 2px solid #3f2873;
+    }
+
+    .log-item strong {
+      color: var(--purple-light);
+    }
+
+    /* SPIRAL BOARD STYLING */
+    .board-wrapper {
+      flex: 1;
+      max-width: 960px;
+      width: 100%;
+      background: rgba(18, 11, 36, 0.85);
+      backdrop-filter: blur(16px);
+      border: 2px solid #33205a;
+      border-radius: 26px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.65), 0 0 35px rgba(139, 92, 246, 0.15);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    .board-header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #2d1c52;
+    }
+
+    .board-header span {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700;
+      color: var(--purple-light);
+    }
+
+    .board-legend {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    #boardSvg {
+      width: 100%;
+      height: auto;
+      max-height: 780px;
+      filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.7));
+    }
+
+    /* SVG Track Styles */
+    .track-bg {
+      fill: none;
+      stroke: #180e30;
+      stroke-width: 58;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .track-glow {
+      fill: none;
+      stroke: var(--purple-primary);
+      stroke-width: 52;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.18;
+    }
+
+    .track-line {
+      fill: none;
+      stroke: #452b7a;
+      stroke-width: 44;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .track-dashed {
+      fill: none;
+      stroke: #8b5cf6;
+      stroke-width: 2.5;
+      stroke-dasharray: 6 10;
+      opacity: 0.6;
+    }
+
+    /* SVG Nodes - Stables, sans conflit transform */
+    .node-group {
+      cursor: pointer;
+    }
+
+    .node-circle {
+      transition: stroke 0.2s ease, stroke-width 0.2s ease, filter 0.2s ease;
+    }
+
+    .node-group:hover .node-circle {
+      stroke: #ffffff !important;
+      stroke-width: 3.5px !important;
+      filter: drop-shadow(0 0 12px var(--purple-primary)) !important;
+    }
+
+    .node-group text {
+      pointer-events: none;
+    }
+
+    /* PIONS : AUCUN CONFLIT AVEC LE HOVER DES CASES */
+    .svg-pawn {
+      stroke: #ffffff;
+      stroke-width: 2.2;
+      filter: drop-shadow(0 3px 6px rgba(0,0,0,0.85));
+      pointer-events: none; /* Ne capture jamais le pointeur */
+      transition: cx 0.1s linear, cy 0.1s linear; /* Déplacement fluide continu */
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(6, 3, 15, 0.88);
+      backdrop-filter: blur(10px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: linear-gradient(150deg, #221442, #110923);
+      border: 2px solid var(--purple-primary);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 450px;
+      padding: 24px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.85), 0 0 35px var(--purple-glow);
+      animation: modalPop 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-icon {
+      font-size: 3.2rem;
+      margin-bottom: 8px;
+    }
+
+    .modal-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.4rem;
+      color: #fff;
+      margin-bottom: 4px;
+    }
+
+    .modal-subtitle {
+      font-size: 0.85rem;
+      color: var(--pink-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .modal-desc {
+      color: var(--purple-light);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    .modal-effect {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px dashed var(--purple-primary);
+      border-radius: 12px;
+      padding: 10px;
+      font-weight: 700;
+      color: #fce7f3;
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+    }
+
+    @keyframes modalPop {
+      0% { opacity: 0; transform: scale(0.9); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #confettiCanvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 200;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Jeu de l'Oie</h1>
+    <p>Edition CERI • Feat. Driss • Sponsorisé par Gen Z</p>
+  </header>
+
+  <div class="app-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      
+      <!-- SETUP -->
+      <section class="panel" id="setupPanel">
+        <h2>⚙️ Configuration</h2>
+        <div class="setup-group">
+          <label>Nombre de joueurs</label>
+          <div class="btn-group">
+            <button class="btn-pill" onclick="setPlayerCount(2)">2</button>
+            <button class="btn-pill" onclick="setPlayerCount(3)">3</button>
+            <button class="btn-pill active" onclick="setPlayerCount(4)">4</button>
+          </div>
+        </div>
+        <div class="player-inputs" id="playerInputsContainer"></div>
+        <button class="btn-primary" onclick="startGame()">Commencer la spirale 🌀</button>
+      </section>
+
+      <!-- GAME CONTROLS -->
+      <section class="panel" id="gameControlPanel" style="display:none;">
+        <h2>🎯 Au tour de jouer</h2>
+        <div class="players-list" id="playersList"></div>
+
+        <div class="dice-area">
+          <div class="dice-container">
+            <div class="die" id="die1">⚀</div>
+            <div class="die" id="die2">⚂</div>
+          </div>
+          <button class="btn-primary" id="rollDiceBtn" onclick="rollDice()">Lancer les dés 🎲</button>
+        </div>
+      </section>
+
+      <!-- LOGS -->
+      <section class="panel">
+        <h2>📜 Journal de la partie</h2>
+        <div class="log-box" id="logBox">
+          <div class="log-item">Configurez vos pions et entrez dans la spirale de 63 cases du CERI.</div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- SPIRAL BOARD -->
+    <main class="board-wrapper">
+      <div class="board-header">
+        <span>🌀 Le Sanctuaire de l'Oie (1 ➔ 63)</span>
+        <span class="board-legend">Cliquez sur une case pour inspecter son effet</span>
+      </div>
+      <!-- SVG SPIRAL BOARD -->
+      <svg id="boardSvg" viewBox="0 0 1000 1000">
+        <defs>
+          <radialGradient id="centerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#ec4899" stop-opacity="0.35"/>
+            <stop offset="60%" stop-color="#8b5cf6" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle cx="500" cy="500" r="460" fill="url(#centerGlow)" />
+        
+        <!-- TRACK PATHS -->
+        <path class="track-bg" id="svgTrackBg" d="" />
+        <path class="track-glow" id="svgTrackGlow" d="" />
+        <path class="track-line" id="svgTrackLine" d="" />
+        <path class="track-dashed" id="svgTrackDashed" d="" />
+
+        <!-- TILES GROUP -->
+        <g id="tilesLayer"></g>
+
+        <!-- PERSISTENT PAWNS GROUP -->
+        <g id="pawnsLayer"></g>
+      </svg>
+    </main>
+  </div>
+
+  <!-- POPUP MODALE -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-card">
+      <div class="modal-icon" id="modalIcon">🦢</div>
+      <h3 class="modal-title" id="modalTitle">Titre</h3>
+      <div class="modal-subtitle" id="modalSubtitle">Sous-titre</div>
+      <p class="modal-desc" id="modalDesc">Description</p>
+      <div class="modal-effect" id="modalEffect">Effet</div>
+      <button class="btn-primary" onclick="closeModal()">Bien reçu !</button>
+    </div>
+  </div>
+
+  <canvas id="confettiCanvas"></canvas>
+
+  <script>
+    /* =========================================================
+       1. LES 11 TYPES DE CASES PERSONNALISÉES
+       ========================================================= */
+    const SPECIAL_TYPES = {
+      OIE: {
+        type: 'oie',
+        icon: '🦢',
+        name: 'Ni vu ni connu',
+        subtitle: 'Relancer les dés',
+        desc: 'Les autres joueurs sont trop occupés à scroller sur leur téléphone. Tu en profites pour relancer les dés discrètement. Ni vu ni connu. 😎',
+        effect: 'Relancer les dés immédiatement',
+        fill: '#3b246a',
+        border: '#8b5cf6'
+      },
+      PYTHAGORE: {
+        type: 'pythagore',
+        icon: '🪽',
+        name: 'Pythagore',
+        subtitle: 'Double déplacement',
+        desc: "Tu sors le théorème de Pythagore pour calculer le double de ton lancer. Tu t'es complètement trompé de formule, mais ton aura a convaincu tout le monde. Tu avances une seconde fois du même nombre de cases. 📐",
+        effect: 'Avance une seconde fois du même nombre de cases',
+        fill: '#133555',
+        border: '#38bdf8'
+      },
+      OBJECTION: {
+        type: 'objection',
+        icon: '↩️',
+        name: 'Objection !',
+        subtitle: '−2 cases',
+        desc: "Les autres joueurs t'accusent de triche et réclament justice. OBJECTION ! Malheureusement, le tribunal a tranché : recule de 2 cases. ⚖️",
+        effect: 'Recule de 2 cases',
+        fill: '#45162a',
+        border: '#f43f5e'
+      },
+      CHASSE: {
+        type: 'chasse',
+        icon: '🔄',
+        name: 'Qui part à la chasse perd sa place',
+        subtitle: 'Échange de places',
+        desc: 'Un joueur est parti aux toilettes sans surveiller son pion. Tu saisis cette occasion en or pour échanger vos places. Il fallait rester vigilant. 🚽',
+        effect: 'Échange ta position avec un adversaire',
+        fill: '#423214',
+        border: '#eab308'
+      },
+      BLOCUS: {
+        type: 'blocus',
+        icon: '⚖️',
+        name: 'Blocus',
+        subtitle: 'Équilibrage du peloton',
+        desc: "Tu refuses cette injustice flagrante : certains joueurs avancent beaucoup trop vite ! Tu imposes un blocus pour rétablir l'équilibre. Si tu es en tête, recule du nombre de joueurs ; sinon, avance d'autant de cases. ✊",
+        effect: 'En tête: recule du nb de joueurs | Sinon: avance d’autant',
+        fill: '#391c59',
+        border: '#c084fc'
+      },
+      CHANCE: {
+        type: 'chance',
+        icon: '🍀',
+        name: "C'est écrit dans les étoiles",
+        subtitle: 'Carte Chance',
+        desc: 'Tu consultes ton horoscope du jour. Il est formel : la chance est de ton côté et tu as droit à une carte Chance. Qui es-tu pour contredire les astres ? 🔮',
+        effect: 'Tire une carte Chance cosmique',
+        fill: '#12392b',
+        border: '#34d399'
+      },
+      PONT: {
+        type: 'pont',
+        icon: '🌉',
+        name: "Pont d'Avignon",
+        subtitle: '+6 cases',
+        desc: "Tu as farmé ton aura sur le pont d'Avignon. Impressionnés par ta performance, les autres joueurs t'accordent généreusement 6 cases supplémentaires. Sur le pont, on y avance, on y avance… 🎶",
+        effect: 'Avance de 6 cases',
+        fill: '#192b5c',
+        border: '#60a5fa'
+      },
+      AUBERGE: {
+        type: 'auberge',
+        icon: '🛏️',
+        name: 'Nuit blanche',
+        subtitle: 'Prochain tour perdu',
+        desc: 'Tu voulais juste regarder une vidéo avant de dormir. Trois heures de doomscroll plus tard, il est 5 h du matin. Tu es en PLS : passe ton prochain tour. 📱',
+        effect: 'Passe ton prochain tour',
+        fill: '#241b4b',
+        border: '#818cf8'
+      },
+      INONDATION: {
+        type: 'inondation',
+        icon: '🌀',
+        name: 'Inondation',
+        subtitle: '−4 cases',
+        desc: 'ALERTE INONDATION ! Les routes sont impraticables et tu dois faire demi-tour. Recule de 4 cases pour éviter la catastrophe. 🌧️',
+        effect: 'Recule de 4 cases',
+        fill: '#0f3140',
+        border: '#22d3ee'
+      },
+      TRANSLATION: {
+        type: 'translation',
+        icon: '🍃',
+        name: 'Translation',
+        subtitle: '+3 cases',
+        desc: 'Une translation de vecteur u te déplace de 3 cases vers l’avant. Enfin un peu de maths qui sert à quelque chose en dehors des contrôles ! 📏',
+        effect: 'Avance de 3 cases',
+        fill: '#133936',
+        border: '#2dd4bf'
+      },
+      DRISS: {
+        type: 'driss',
+        icon: '💀',
+        name: 'M. Driss',
+        subtitle: '−8 cases',
+        desc: 'Tu aperçois M. Driss au loin. Pris de panique, tu pars en courant dans la direction opposée… sauf que tu as choisi la mauvaise. Tu recules de 8 cases. 🏃💨',
+        effect: 'Panique : recule de 8 cases !',
+        fill: '#4c1218',
+        border: '#f87171'
+      }
+    };
+
+    const CHANCE_DECK = [
+      { text: "Les planètes s'alignent : tu trouves 10€ par terre devant le distributeur.", move: 3 },
+      { text: "Mercure rétrograde : ton réveil n'a pas sonné, tu cours après le bus.", move: -2 },
+      { text: "Ton horoscope annonce une énergie débordante : double foulée astrale !", move: 4 },
+      { text: "Un trou noir spatio-temporel t'aspire vers l'arrière.", move: -4 },
+      { text: "Une étoile filante exauce ton vœu de griller la politesse aux autres.", move: 2 },
+      { text: "Tu as oublié d'éteindre la lumière de ta chambre en partant.", move: -1 }
+    ];
+
+    const BOARD_MAPPING = {
+      5: SPECIAL_TYPES.PYTHAGORE,
+      6: SPECIAL_TYPES.PONT,
+      9: SPECIAL_TYPES.OIE,
+      11: SPECIAL_TYPES.OBJECTION,
+      14: SPECIAL_TYPES.CHANCE,
+      16: SPECIAL_TYPES.CHASSE,
+      18: SPECIAL_TYPES.OIE,
+      20: SPECIAL_TYPES.BLOCUS,
+      23: SPECIAL_TYPES.PYTHAGORE,
+      25: SPECIAL_TYPES.CHANCE,
+      26: SPECIAL_TYPES.INONDATION,
+      27: SPECIAL_TYPES.OIE,
+      29: SPECIAL_TYPES.OBJECTION,
+      30: SPECIAL_TYPES.PONT,
+      31: SPECIAL_TYPES.AUBERGE,
+      33: SPECIAL_TYPES.TRANSLATION,
+      35: SPECIAL_TYPES.CHASSE,
+      36: SPECIAL_TYPES.OIE,
+      38: SPECIAL_TYPES.BLOCUS,
+      41: SPECIAL_TYPES.PYTHAGORE,
+      43: SPECIAL_TYPES.AUBERGE,
+      44: SPECIAL_TYPES.TRANSLATION,
+      45: SPECIAL_TYPES.OIE,
+      47: SPECIAL_TYPES.OBJECTION,
+      48: SPECIAL_TYPES.INONDATION,
+      50: SPECIAL_TYPES.CHANCE,
+      53: SPECIAL_TYPES.CHASSE,
+      54: SPECIAL_TYPES.OIE,
+      56: SPECIAL_TYPES.BLOCUS,
+      58: SPECIAL_TYPES.DRISS
+    };
+
+    /* =========================================================
+       2. COORDONNÉES DE LA SPIRALE
+       ========================================================= */
+    const boardPositions = [];
+    let spiralSvgPathD = "";
+
+    function generateSpiralCoords() {
+      const centerX = 500;
+      const centerY = 500;
+      const totalTurns = 3.2; 
+      const startAngle = Math.PI * 0.95;
+      const totalAngle = totalTurns * 2 * Math.PI;
+      const rStart = 430;
+      const rEnd = 70;
+
+      const samples = 1500;
+      const finePoints = [];
+      for (let i = 0; i <= samples; i++) {
+        const t = i / samples;
+        const theta = startAngle + t * totalAngle;
+        const r = rStart - t * (rStart - rEnd);
+        const x = centerX + r * Math.cos(theta);
+        const y = centerY + r * Math.sin(theta);
+        finePoints.push({ x, y });
+      }
+
+      const dists = [0];
+      for (let i = 1; i < finePoints.length; i++) {
+        const dx = finePoints[i].x - finePoints[i-1].x;
+        const dy = finePoints[i].y - finePoints[i-1].y;
+        dists.push(dists[i-1] + Math.hypot(dx, dy));
+      }
+      const totalLength = dists[dists.length - 1];
+
+      boardPositions[0] = null;
+      for (let c = 1; c <= 63; c++) {
+        const targetDist = ((c - 1) / 62) * totalLength;
+        let low = 0, high = dists.length - 1;
+        while (low < high) {
+          const mid = (low + high) >> 1;
+          if (dists[mid] < targetDist) low = mid + 1;
+          else high = mid;
+        }
+        boardPositions[c] = {
+          x: Math.round(finePoints[low].x * 10) / 10,
+          y: Math.round(finePoints[low].y * 10) / 10
+        };
+      }
+
+      let d = `M ${finePoints[0].x.toFixed(1)} ${finePoints[0].y.toFixed(1)}`;
+      for (let i = 1; i < finePoints.length; i += 6) {
+        d += ` L ${finePoints[i].x.toFixed(1)} ${finePoints[i].y.toFixed(1)}`;
+      }
+      spiralSvgPathD = d;
+    }
+
+    generateSpiralCoords();
+
+    /* =========================================================
+       3. ÉTAT DU JEU & NOUVEAUX NOMS PAR DÉFAUT
+       ========================================================= */
+    let playerCount = 4;
+    let players = [];
+    let currentPlayerIndex = 0;
+    let isRolling = false;
+    let gameOver = false;
+    let pendingAction = null;
+
+    const PLAYER_COLORS = ['#ec4899', '#06b6d4', '#10b981', '#f59e0b'];
+    // Ordre spécifié par l'utilisateur :
+    const DEFAULT_NAMES = ["Aminata", "Mariane", "Océane", "Rihanna"];
+
+    /* AUDIO */
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playBeep(freq = 440, type = 'sine', duration = 0.1) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      try {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {}
+    }
+
+    /* CONFIGURATION */
+    function setPlayerCount(count) {
+      playerCount = count;
+      document.querySelectorAll('.btn-pill').forEach((btn, idx) => {
+        btn.classList.toggle('active', idx + 2 === count);
+      });
+      renderPlayerInputs();
+    }
+
+    function renderPlayerInputs() {
+      const container = document.getElementById('playerInputsContainer');
+      container.innerHTML = '';
+      for (let i = 0; i < playerCount; i++) {
+        const row = document.createElement('div');
+        row.className = 'player-input-row';
+        row.innerHTML = `
+          <div class="p-badge" style="background:${PLAYER_COLORS[i]}; color:${PLAYER_COLORS[i]};"></div>
+          <input type="text" id="pname_${i}" value="${DEFAULT_NAMES[i]}" maxlength="14" placeholder="Joueur ${i+1}">
+        `;
+        container.appendChild(row);
+      }
+    }
+
+    function startGame() {
+      players = [];
+      for (let i = 0; i < playerCount; i++) {
+        const val = document.getElementById(`pname_${i}`).value.trim() || DEFAULT_NAMES[i];
+        players.push({
+          id: i,
+          name: val,
+          color: PLAYER_COLORS[i],
+          position: 1,
+          skipTurns: 0
+        });
+      }
+
+      document.getElementById('setupPanel').style.display = 'none';
+      document.getElementById('gameControlPanel').style.display = 'block';
+
+      currentPlayerIndex = 0;
+      gameOver = false;
+      logMessage(`🚀 <strong>La partie démarre !</strong> Edition CERI Feat. Driss.`);
+
+      drawBoardSvg();
+      initPawnsLayer();
+      updatePawns();
+      updatePlayerStatusList();
+    }
+
+    /* =========================================================
+       4. RENDU SVG SANS CONFLIT DE TRANSFORMATION
+       ========================================================= */
+    function drawBoardSvg() {
+      document.getElementById('svgTrackBg').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackGlow').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackLine').setAttribute('d', spiralSvgPathD);
+      document.getElementById('svgTrackDashed').setAttribute('d', spiralSvgPathD);
+
+      const tilesLayer = document.getElementById('tilesLayer');
+      tilesLayer.innerHTML = '';
+
+      for (let i = 1; i <= 63; i++) {
+        const pos = boardPositions[i];
+        const special = BOARD_MAPPING[i];
+
+        const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        g.setAttribute('class', 'node-group');
+        g.setAttribute('transform', `translate(${pos.x}, ${pos.y})`);
+        g.setAttribute('data-cell', i);
+        g.onclick = () => showCellInfo(i);
+
+        let r = 21;
+        let fill = '#1c1236';
+        let stroke = '#3d2568';
+        let strokeWidth = 2;
+        let icon = '';
+        let numColor = '#c4b5fd';
+
+        if (i === 1) {
+          fill = '#064e3b';
+          stroke = '#10b981';
+          icon = '🏁';
+          r = 25;
+        } else if (i === 63) {
+          fill = '#5b21b6';
+          stroke = '#ec4899';
+          strokeWidth = 3;
+          icon = '🏆';
+          r = 30;
+        } else if (special) {
+          fill = special.fill;
+          stroke = special.border;
+          icon = special.icon;
+          strokeWidth = 2;
+        }
+
+        g.innerHTML = `
+          <circle class="node-circle" cx="0" cy="0" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}" />
+          ${icon ? `<text x="0" y="${i === 63 ? 4 : 3}" text-anchor="middle" font-size="${i === 63 ? '20' : '14'}">${icon}</text>` : ''}
+          <text x="0" y="${icon ? (i === 63 ? -14 : -11) : 4}" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="${i === 63 ? '13' : '11'}" fill="${numColor}">${i}</text>
+        `;
+
+        tilesLayer.appendChild(g);
+      }
+    }
+
+    /* Pions persistants pour éviter les recréations et sauts d'animation */
+    function initPawnsLayer() {
+      const pawnsLayer = document.getElementById('pawnsLayer');
+      pawnsLayer.innerHTML = '';
+      players.forEach(p => {
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute('class', 'svg-pawn');
+        circle.setAttribute('id', `pawn-svg-${p.id}`);
+        circle.setAttribute('r', 8.5);
+        circle.setAttribute('fill', p.color);
+        pawnsLayer.appendChild(circle);
+      });
+    }
+
+    function updatePawns() {
+      const occupantsByPos = {};
+      players.forEach(p => {
+        if (!occupantsByPos[p.position]) occupantsByPos[p.position] = [];
+        occupantsByPos[p.position].push(p);
+      });
+
+      players.forEach(p => {
+        const list = occupantsByPos[p.position] || [p];
+        const idx = list.indexOf(p);
+        const count = list.length;
+        const pos = boardPositions[p.position];
+        if (!pos) return;
+
+        let offsetX = 0;
+        let offsetY = 0;
+
+        if (count > 1) {
+          const angle = (idx / count) * 2 * Math.PI - Math.PI / 2;
+          const dist = 12;
+          offsetX = Math.cos(angle) * dist;
+          offsetY = Math.sin(angle) * dist;
+        }
+
+        const pawnEl = document.getElementById(`pawn-svg-${p.id}`);
+        if (pawnEl) {
+          pawnEl.setAttribute('cx', (pos.x + offsetX).toFixed(1));
+          pawnEl.setAttribute('cy', (pos.y + offsetY).toFixed(1));
+        }
+      });
+    }
+
+    function updatePlayerStatusList() {
+      const container = document.getElementById('playersList');
+      container.innerHTML = '';
+
+      players.forEach((p, idx) => {
+        const isTurn = idx === currentPlayerIndex && !gameOver;
+        const card = document.createElement('div');
+        card.className = `player-card ${isTurn ? 'active-turn' : ''}`;
+        
+        let statusText = '';
+        if (p.skipTurns > 0) statusText = `(Dort 💤)`;
+
+        card.innerHTML = `
+          <div class="player-info">
+            <div class="p-badge" style="background:${p.color}; color:${p.color};"></div>
+            <div>
+              <span class="player-name">${p.name}</span>
+              <span class="player-status">${statusText}</span>
+            </div>
+          </div>
+          <div class="player-pos-badge">Case ${p.position}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    /* =========================================================
+       5. DÉPLACEMENT FLUIDE DES PIONS
+       ========================================================= */
+    const DICE_FACES = ['⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+
+    function rollDice() {
+      if (isRolling || gameOver) return;
+
+      const player = players[currentPlayerIndex];
+
+      if (player.skipTurns > 0) {
+        player.skipTurns--;
+        logMessage(`📱 <strong>${player.name}</strong> a doomscrollé toute la nuit : tour passé !`);
+        nextTurn();
+        return;
+      }
+
+      isRolling = true;
+      document.getElementById('rollDiceBtn').disabled = true;
+
+      const die1El = document.getElementById('die1');
+      const die2El = document.getElementById('die2');
+      die1El.classList.add('rolling');
+      die2El.classList.add('rolling');
+      playBeep(280, 'square', 0.15);
+
+      let count = 0;
+      const interval = setInterval(() => {
+        die1El.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+        die2El.textContent = DICE_FACES[Math.floor(Math.random() * 6)];
+        count++;
+
+        if (count > 9) {
+          clearInterval(interval);
+          die1El.classList.remove('rolling');
+          die2El.classList.remove('rolling');
+
+          const d1 = Math.floor(Math.random() * 6) + 1;
+          const d2 = Math.floor(Math.random() * 6) + 1;
+          die1El.textContent = DICE_FACES[d1 - 1];
+          die2El.textContent = DICE_FACES[d2 - 1];
+
+          const total = d1 + d2;
+          playBeep(520, 'sine', 0.2);
+          logMessage(`🎲 <strong>${player.name}</strong> fait un <strong>${total}</strong> (${d1} + ${d2}).`);
+
+          movePlayer(player, total);
+        }
+      }, 50);
+    }
+
+    function movePlayer(player, steps, callback) {
+      let targetPos = player.position + steps;
+
+      if (targetPos > 63) {
+        const overshoot = targetPos - 63;
+        targetPos = 63 - overshoot;
+        logMessage(`↩️ <strong>${player.name}</strong> dépasse le centre et rebondit en arrière sur la case <strong>${targetPos}</strong> !`);
+      }
+
+      animateSteps(player, targetPos, () => {
+        if (callback) {
+          callback();
+        } else {
+          handleLanding(player, steps);
+        }
+      });
+    }
+
+    function animateSteps(player, targetPos, onDone) {
+      const stepDir = targetPos > player.position ? 1 : -1;
+      const stepTimer = setInterval(() => {
+        if (player.position === targetPos) {
+          clearInterval(stepTimer);
+          updatePawns();
+          updatePlayerStatusList();
+          onDone();
+        } else {
+          player.position += stepDir;
+          playBeep(420 + player.position * 8, 'triangle', 0.04);
+          updatePawns();
+          updatePlayerStatusList();
+        }
+      }, 95);
+    }
+
+    /* =========================================================
+       6. LOGIQUE DES EFFETS DE CASES
+       ========================================================= */
+    function handleLanding(player, lastRoll) {
+      if (player.position === 63) {
+        triggerVictory(player);
+        return;
+      }
+
+      const special = BOARD_MAPPING[player.position];
+      if (!special) {
+        nextTurn();
+        return;
+      }
+
+      setTimeout(() => {
+        triggerSpecial(player, special, lastRoll);
+      }, 150);
+    }
+
+    function triggerSpecial(player, special, lastRoll) {
+      showModal(special.icon, special.name, special.subtitle, special.desc, special.effect);
+
+      switch (special.type) {
+        case 'oie':
+          logMessage(`🦢 <strong>${player.name}</strong> relance immédiatement les dés. Ni vu ni connu !`);
+          pendingAction = () => {
+            isRolling = false;
+            document.getElementById('rollDiceBtn').disabled = false;
+          };
+          return;
+
+        case 'pythagore':
+          logMessage(`🪽 Pythagore ! <strong>${player.name}</strong> avance une seconde fois de ${lastRoll} cases.`);
+          pendingAction = () => {
+            movePlayer(player, lastRoll, () => nextTurn());
+          };
+          return;
+
+        case 'objection':
+          logMessage(`⚖️ Objection ! <strong>${player.name}</strong> recule de 2 cases.`);
+          pendingAction = () => {
+            movePlayer(player, -2, () => nextTurn());
+          };
+          return;
+
+        case 'chasse':
+          pendingAction = () => {
+            let target = players.filter(p => p.id !== player.id && p.position > player.position)
+                                .sort((a,b) => a.position - b.position)[0];
+            if (!target) {
+              target = players.filter(p => p.id !== player.id)
+                              .sort((a,b) => b.position - a.position)[0];
+            }
+            if (target && target.position !== player.position) {
+              const oldPos = player.position;
+              player.position = target.position;
+              target.position = oldPos;
+              logMessage(`🔄 <strong>${player.name}</strong> échange sa place avec <strong>${target.name}</strong> (Case ${player.position}) !`);
+              updatePawns();
+              updatePlayerStatusList();
+            } else {
+              logMessage(`🔄 Aucun joueur disponible pour l'échange.`);
+            }
+            nextTurn();
+          };
+          return;
+
+        case 'blocus':
+          pendingAction = () => {
+            const maxPos = Math.max(...players.map(p => p.position));
+            const isLeader = player.position === maxPos;
+            const N = players.length;
+
+            if (isLeader) {
+              logMessage(`✊ Blocus ! <strong>${player.name}</strong> est en tête : il recule de ${N} cases !`);
+              movePlayer(player, -N, () => nextTurn());
+            } else {
+              logMessage(`✊ Blocus ! <strong>${player.name}</strong> n'est pas en tête : il avance de ${N} cases !`);
+              movePlayer(player, N, () => nextTurn());
+            }
+          };
+          return;
+
+        case 'chance':
+          const card = CHANCE_DECK[Math.floor(Math.random() * CHANCE_DECK.length)];
+          showModal('🔮', "C'est écrit dans les étoiles", 'Carte Chance', card.text, card.move >= 0 ? `Avance de ${card.move} cases` : `Recule de ${Math.abs(card.move)} cases`);
+          pendingAction = () => {
+            movePlayer(player, card.move, () => nextTurn());
+          };
+          return;
+
+        case 'pont':
+          logMessage(`🌉 <strong>${player.name}</strong> avance de 6 cases sur le pont d'Avignon.`);
+          pendingAction = () => {
+            movePlayer(player, 6, () => nextTurn());
+          };
+          return;
+
+        case 'auberge':
+          player.skipTurns = 1;
+          logMessage(`📱 Nuit blanche pour <strong>${player.name}</strong> : tour suivant annulé.`);
+          pendingAction = () => nextTurn();
+          return;
+
+        case 'inondation':
+          logMessage(`🌧️ Inondation ! <strong>${player.name}</strong> recule de 4 cases.`);
+          pendingAction = () => {
+            movePlayer(player, -4, () => nextTurn());
+          };
+          return;
+
+        case 'translation':
+          logMessage(`📏 Translation mathématique ! <strong>${player.name}</strong> avance de 3 cases.`);
+          pendingAction = () => {
+            movePlayer(player, 3, () => nextTurn());
+          };
+          return;
+
+        case 'driss':
+          logMessage(`💀 Panique ! <strong>${player.name}</strong> croise M. Driss et recule de 8 cases !`);
+          pendingAction = () => {
+            movePlayer(player, -8, () => nextTurn());
+          };
+          return;
+      }
+    }
+
+    /* MODALE */
+    function showModal(icon, title, subtitle, desc, effect) {
+      document.getElementById('modalIcon').textContent = icon;
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalSubtitle').textContent = subtitle;
+      document.getElementById('modalDesc').textContent = desc;
+      document.getElementById('modalEffect').textContent = effect;
+      document.getElementById('modalOverlay').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('modalOverlay').style.display = 'none';
+      if (pendingAction) {
+        const action = pendingAction;
+        pendingAction = null;
+        action();
+      }
+    }
+
+    function showCellInfo(cellNum) {
+      const special = BOARD_MAPPING[cellNum];
+      if (special) {
+        showModal(special.icon, `${cellNum}. ${special.name}`, special.subtitle, special.desc, special.effect);
+      } else if (cellNum === 1) {
+        showModal('🏁', 'Case 1 - Départ', 'Entrée de la spirale', 'Le voyage commence ici.', 'Lancer les dés');
+      } else if (cellNum === 63) {
+        showModal('🏆', 'Case 63 - Sanctuaire', 'Arrivée finale', 'Le cœur de la spirale cosmique.', 'Atteindre pile 63 pour gagner');
+      }
+    }
+
+    /* TOURS & VICTOIRE */
+    function nextTurn() {
+      if (gameOver) return;
+      currentPlayerIndex = (currentPlayerIndex + 1) % players.length;
+      isRolling = false;
+      document.getElementById('rollDiceBtn').disabled = false;
+      updatePlayerStatusList();
+    }
+
+    function logMessage(text) {
+      const box = document.getElementById('logBox');
+      const item = document.createElement('div');
+      item.className = 'log-item';
+      item.innerHTML = text;
+      box.appendChild(item);
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function triggerVictory(winner) {
+      gameOver = true;
+      isRolling = false;
+      playBeep(880, 'sine', 0.5);
+      logMessage(`🎉🏆 <strong>${winner.name} a atteint le centre et remporte la partie !</strong>`);
+      showModal('👑', `Victoire de ${winner.name} !`, 'Champion de la Spirale', `Tu as bravé M. Driss, résisté au doomscroll et franchi la 63e case avec panache !`, 'Partie Gagnée');
+      startConfetti();
+    }
+
+    function startConfetti() {
+      const canvas = document.getElementById('confettiCanvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+
+      const particles = [];
+      for (let i = 0; i < 150; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          size: Math.random() * 8 + 4,
+          speed: Math.random() * 4 + 2,
+          color: ['#8b5cf6', '#ec4899', '#06b6d4', '#f59e0b', '#10b981'][Math.floor(Math.random() * 5)]
+        });
+      }
+
+      function render() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach(p => {
+          ctx.fillStyle = p.color;
+          ctx.fillRect(p.x, p.y, p.size, p.size);
+          p.y += p.speed;
+          if (p.y > canvas.height) p.y = -10;
+        });
+        requestAnimationFrame(render);
+      }
+      render();
+    }
+
+    // Initialisation
+    renderPlayerInputs();
+  </script>
+</body>
+</html>
